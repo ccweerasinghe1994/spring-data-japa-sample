@@ -3,9 +3,11 @@ package chamara.springdatajpasample.sdjpademo.bootstrap;
 import chamara.springdatajpasample.sdjpademo.domain.Book;
 import chamara.springdatajpasample.sdjpademo.repositories.BookRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile({"local", "default"})
 public class DataInitializer implements CommandLineRunner {
     private final BookRepository bookRepository;
     public DataInitializer(BookRepository bookRepository) {
@@ -15,6 +17,10 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         System.out.println("Bootstrap started");
+        System.out.println("Clearing all data");
+        bookRepository.deleteAll();
+        System.out.println("Clearing all data completed");
+
         Book book = new Book("1234", "Spring Framework", "Chamara");
         System.out.println("Book ID: " + book.getId());
         Book savedResponse1 = bookRepository.save(book);
