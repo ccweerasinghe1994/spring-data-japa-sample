@@ -59,7 +59,7 @@
 				<groupId>org.liquibase</groupId>
 				<artifactId>liquibase-maven-plugin</artifactId>
 				<configuration>
-					<outputChangeLogFile>changelog.mysql.sql</outputChangeLogFile>
+					<outputChangeLogFile>changelog.xml</outputChangeLogFile>
 					<propertyFile>liquibase.properties</propertyFile>
 				</configuration>
 				<dependencies>

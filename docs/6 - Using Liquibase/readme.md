@@ -217,7 +217,55 @@ CREATE TABLE book (id BIGINT NOT NULL, isbn VARCHAR(255) NULL, publisher VARCHAR
 -- changeset chamara:1708753296657-2
 CREATE TABLE book_seq (next_val BIGINT NULL);
 ```
+if the generated file needed to be in xml format, then the following command can be used
+
+```xml
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="chamara" id="1708778047205-1">
+        <createTable tableName="book">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="isbn" type="VARCHAR(255)"/>
+            <column name="publisher" type="VARCHAR(255)"/>
+            <column name="title" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="chamara" id="1708778047205-2">
+        <createTable tableName="book_seq">
+            <column name="next_val" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
+```
+
 ## 42 - Organizing Change Logs
+
+![img_15.png](img_15.png)
+
+root changelog file
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <include file="db/changelog/baseline-changelog.xml"/>
+</databaseChangeLog>
+```
+so the baseline-changelog.xml file will be included in the root changelog file
+
+current state of the database will be included in the baseline-changelog.xml file
+
+all the future changes will be included in the changelog.xml files.
+
 ## 43 - Spring Boot Configuration
 ## 44 - Initializing Data with Spring
 ## 45 - Alter Table with Liquibase
