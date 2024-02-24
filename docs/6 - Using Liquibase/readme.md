@@ -46,6 +46,42 @@ which one to choose?
 ### Next Steps
 ![img_12.png](img_12.png)
 ## 40 - Liquibase Maven Plugin
+
+```xml
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<!--start with basic information to get Liquibase plugin:
+                include <groupId>, <artifactID>, and <version> elements-->
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<configuration>
+					<url>jdbc:mysql://127.0.0.1:3306/bookdb?useUnicode=true&amp;characterEncoding=UTF-8&amp;ServerTimezone=UTC</url>
+					<username>bookadmin</username>
+					<password>password</password>
+					<!--set values for Liquibase properties and settings
+                    for example, the location of a properties file to use-->
+<!--					<propertyFile>liquibase.properties</propertyFile>-->
+				</configuration>
+				<dependencies>
+					<!--set up any dependencies for Liquibase to function in your
+                    environment for example, a database-specific plugin-->
+					<dependency>
+						<groupId>org.liquibase.ext</groupId>
+						<artifactId>liquibase-mysql</artifactId>
+						<version>4.25.1</version>
+					</dependency>
+					<dependency>
+						<groupId>mysql</groupId>
+						<artifactId>mysql-connector-java</artifactId>
+						<version>${mysql.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+```
+
 ## 41 - Generate Changeset from Database
 ## 42 - Organizing Change Logs
 ## 43 - Spring Boot Configuration
