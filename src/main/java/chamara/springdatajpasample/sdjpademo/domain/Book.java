@@ -13,7 +13,7 @@ public class Book {
     private String title;
     private String publisher;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     public Book() {

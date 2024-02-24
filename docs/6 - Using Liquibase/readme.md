@@ -81,8 +81,14 @@ which one to choose?
 				</dependencies>
 			</plugin>
 ```
+REF - https://docs.liquibase.com/tools-integrations/maven/home.html
 
+REF - https://docs.liquibase.com/tools-integrations/maven/maven-pom-file.html
 ## 41 - Generate Changeset from Database
+
+https://docs.liquibase.com/tools-integrations/maven/commands/maven-generatechangelog.html
+
+
 ## 42 - Organizing Change Logs
 ## 43 - Spring Boot Configuration
 ## 44 - Initializing Data with Spring
