@@ -83,6 +83,140 @@ which one to choose?
 ```
 
 ## 41 - Generate Changeset from Database
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.3.0-M1</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>chamara.springdatajpasample</groupId>
+	<artifactId>sdjpa-demo</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>sdjpa-demo</name>
+	<description>Demo project for Spring Boot</description>
+	<properties>
+		<java.version>21</java.version>
+	</properties>
+	<dependencies>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<version>8.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<configuration>
+					<outputChangeLogFile>changelog.mysql.sql</outputChangeLogFile>
+					<propertyFile>liquibase.properties</propertyFile>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>com.mysql</groupId>
+						<artifactId>mysql-connector-j</artifactId>
+						<version>8.3.0</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+	<profiles>
+		<profile>
+			<id>h2</id>
+			<dependencies>
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+			</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+	<repositories>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+</project>
+
+```
+
+create the liquibase.properties file in the resources folder
+
+```properties
+url=jdbc:mysql://127.0.0.1:3306/bookdb?useUnicode=true&characterEncoding=UTF-8&ServerTimezone=UTC
+username=bookadmin
+password=password
+changeSetAuthor=chamara
+defaultSchemaName=bookdb
+```
+![img_13.png](img_13.png)
+
+it will generate the changelog.mysql.sql file in the resources folder
+
+```sql
+-- liquibase formatted sql
+
+-- changeset chamara:1708753296657-1
+CREATE TABLE book (id BIGINT NOT NULL, isbn VARCHAR(255) NULL, publisher VARCHAR(255) NULL, title VARCHAR(255) NULL, CONSTRAINT PK_BOOK PRIMARY KEY (id));
+
+-- changeset chamara:1708753296657-2
+CREATE TABLE book_seq (next_val BIGINT NULL);
+```
 ## 42 - Organizing Change Logs
 ## 43 - Spring Boot Configuration
 ## 44 - Initializing Data with Spring
