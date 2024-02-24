@@ -9,4 +9,5 @@
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
     <include file="db/changelog/baseline-changelog.xml"/>
+    <include file="db/changelog/init-hibernate.xml"/>
 </databaseChangeLog>
