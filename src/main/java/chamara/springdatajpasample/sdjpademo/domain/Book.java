@@ -1,9 +1,6 @@
 package chamara.springdatajpasample.sdjpademo.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
@@ -15,14 +12,16 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    @Column
+    private Long authorId;
     public Book() {
 
     }
-    public Book(String isbn, String title, String publisher) {
+    public Book(String isbn, String title, String publisher, Long AuthorId) {
         this.isbn = isbn;
         this.title = title;
         this.publisher = publisher;
+        this.authorId = AuthorId;
     }
     public String getIsbn() {
         return isbn;
@@ -54,6 +53,14 @@ public class Book {
 
     public Long getId() {
         return id;
+    }
+
+    public Long getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(Long AuthorId) {
+        this.authorId = AuthorId;
     }
 
     @Override
