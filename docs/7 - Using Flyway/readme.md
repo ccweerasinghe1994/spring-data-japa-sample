@@ -228,3 +228,35 @@ public class Book {
 ![img_20.png](img_20.png)
 
 ## 50 - Clean and Rebuild with Flyway
+
+![img_22.png](img_22.png)
+![img_23.png](img_23.png)
+
+let's add a configuration to clean the database and rebuild it
+```java
+package chamara.springdatajpasample.sdjpademo.config;
+
+import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+
+@Configuration
+@Profile("clean")
+public class DbClean {
+
+    @Bean
+    public FlywayMigrationStrategy cleanMigrateStrategy() {
+        return flyway -> {
+            flyway.clean();
+            flyway.migrate();
+        };
+    }
+}
+```
+
+let's add a new profile in the application-clean.properties
+```properties
+spring.flyway.clean-disabled=false
+```
+![img_21.png](img_21.png)
