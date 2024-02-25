@@ -74,4 +74,68 @@ values (1);
 ![img_16.png](img_16.png)
 ![img_17.png](img_17.png)
 ## 49 - Alter Table with Flyway
+let's add a author class
+```java
+package chamara.springdatajpasample.sdjpademo.domain;
+
+import jakarta.persistence.*;
+
+@Entity
+public class Author {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    private String firstName;
+
+    private String lastName;
+
+    public Author() {
+    }
+
+    public Author(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+}
+```
+
+```sql
+drop table if exists book;
+drop table if exists book_seq;
+
+create table book (
+                      id bigint not null,
+                      isbn varchar(255),
+                      publisher varchar(255),
+                      title varchar(255),
+                      primary key (id)
+) engine=InnoDB;
+
+create table book_seq (
+                          next_val bigint
+) engine=InnoDB;
+
+insert into book_seq values ( 1 );
+```
+```sql
+drop table if exists author;
+drop table if exists author_seq;
+
+create table author
+(
+    id         bigint not null,
+    first_name varchar(255),
+    last_name varchar(255),
+    primary key (id)
+) engine = InnoDB;
+
+create table author_seq (
+                            next_val bigint
+) engine=InnoDB;
+
+insert into author_seq values ( 1 );
+```
+![img_19.png](img_19.png)
+
 ## 50 - Clean and Rebuild with Flyway
