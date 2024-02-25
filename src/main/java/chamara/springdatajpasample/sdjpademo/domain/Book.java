@@ -12,16 +12,14 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column
-    private Long authorId;
+
     public Book() {
 
     }
-    public Book(String isbn, String title, String publisher, Long AuthorId) {
+    public Book(String isbn, String title, String publisher) {
         this.isbn = isbn;
         this.title = title;
         this.publisher = publisher;
-        this.authorId = AuthorId;
     }
     public String getIsbn() {
         return isbn;
@@ -53,14 +51,6 @@ public class Book {
 
     public Long getId() {
         return id;
-    }
-
-    public Long getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(Long AuthorId) {
-        this.authorId = AuthorId;
     }
 
     @Override
