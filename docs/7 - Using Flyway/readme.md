@@ -16,5 +16,62 @@
 ![img_12.png](img_12.png)
 
 ## 48 - Spring Boot Configuration
+make sure the profile is local
+so, it will override the default profile
+
+![img_13.png](img_13.png)
+
+add the flyway dependency
+```xml
+<dependency>
+    <groupId>org.flywaydb</groupId>
+    <artifactId>flyway-core</artifactId>
+</dependency>
+<dependency>
+<groupId>org.flywaydb</groupId>
+<artifactId>flyway-mysql</artifactId>
+</dependency>
+```
+
+![img_18.png](img_18.png)
+
+let's add the flyway configuration in the application.local.properties
+```properties
+spring.datasource.username=bookuser
+spring.datasource.password=password
+spring.datasource.url=jdbc:mysql://127.0.0.1:3306/bookdb?useUnicode=true&characterEncoding=UTF-8&ServerTimezone=UTC
+spring.jpa.hibernate.ddl-auto=validate
+spring.sql.init.mode=always
+
+spring.flyway.user=bookadmin
+spring.flyway.password=password
+```
+let's move the sql file to the resources/db/migration folder
+```sql
+drop table if exists book;
+drop table if exists book_seq;
+
+create table book
+(
+    id        bigint not null,
+    isbn      varchar(255),
+    publisher varchar(255),
+    title     varchar(255),
+    primary key (id)
+) engine = InnoDB;
+
+create table book_seq
+(
+    next_val bigint
+) engine = InnoDB;
+
+insert into book_seq
+values (1);
+```
+
+![img_14.png](img_14.png)
+![img_15.png](img_15.png)
+![img_16.png](img_16.png)
+![img_17.png](img_17.png)
 ## 49 - Alter Table with Flyway
 ## 50 - Clean and Rebuild with Flyway
