@@ -12,14 +12,17 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column
+    private Long authorId;
 
     public Book() {
 
     }
-    public Book(String isbn, String title, String publisher) {
+    public Book(String isbn, String title, String publisher, Long authorId) {
         this.isbn = isbn;
         this.title = title;
         this.publisher = publisher;
+        this.authorId = authorId;
     }
     public String getIsbn() {
         return isbn;
@@ -52,7 +55,13 @@ public class Book {
     public Long getId() {
         return id;
     }
+    public Long getAuthorId() {
+        return authorId;
+    }
 
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

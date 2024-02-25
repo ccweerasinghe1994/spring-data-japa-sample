@@ -138,4 +138,93 @@ insert into author_seq values ( 1 );
 ```
 ![img_19.png](img_19.png)
 
+
+let's alter the book table to add an author_id column
+create a new migration file `V3__alter_book_table.sql`
+
+```sql
+alter table book add column author_id bigint;
+```
+```java
+package chamara.springdatajpasample.sdjpademo.domain;
+
+import jakarta.persistence.*;
+
+import java.util.Objects;
+
+@Entity
+public class Book {
+    private String isbn;
+    private String title;
+    private String publisher;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    @Column
+    private Long authorId;
+
+    public Book() {
+
+    }
+    public Book(String isbn, String title, String publisher, Long authorId) {
+        this.isbn = isbn;
+        this.title = title;
+        this.publisher = publisher;
+        this.authorId = authorId;
+    }
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
+    public Long getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return Objects.equals(id, book.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+}
+
+```
+![img_20.png](img_20.png)
+
 ## 50 - Clean and Rebuild with Flyway

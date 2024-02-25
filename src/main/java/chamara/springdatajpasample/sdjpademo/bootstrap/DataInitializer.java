@@ -21,12 +21,12 @@ public class DataInitializer implements CommandLineRunner {
         bookRepository.deleteAll();
         System.out.println("Clearing all data completed");
 
-        Book book = new Book("1234", "Spring Framework", "Chamara");
+        Book book = new Book("1234", "Spring Framework", "Chamara",null);
         System.out.println("Book ID: " + book.getId());
         Book savedResponse1 = bookRepository.save(book);
         System.out.println("Book ID: " + savedResponse1.getId());
 
-        Book book1 = new Book("12332", "Harry Potter", "JK Rowling");
+        Book book1 = new Book("12332", "Harry Potter", "JK Rowling",null);
         System.out.println("Book ID: " + book1.getId());
         Book savedResponse2 = bookRepository.save(book1);
         System.out.println("Book ID: " + savedResponse2.getId());
