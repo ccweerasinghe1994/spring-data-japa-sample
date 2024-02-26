@@ -3,8 +3,10 @@ package chamara.springdatajpasample.sdjpademo;
 
 import chamara.springdatajpasample.sdjpademo.domain.BookNatural;
 import chamara.springdatajpasample.sdjpademo.domain.composite.AuthorComposite;
+import chamara.springdatajpasample.sdjpademo.domain.composite.AuthorEmbedded;
 import chamara.springdatajpasample.sdjpademo.domain.composite.NameId;
 import chamara.springdatajpasample.sdjpademo.repositories.AuthCompositeRepository;
+import chamara.springdatajpasample.sdjpademo.repositories.AuthEmbeddedCompositeRepository;
 import chamara.springdatajpasample.sdjpademo.repositories.BookNaturalRepository;
 import chamara.springdatajpasample.sdjpademo.repositories.BookRepository;
 import org.junit.jupiter.api.Test;
@@ -29,6 +31,18 @@ public class MySqlIT {
 
     @Autowired
     AuthCompositeRepository authCompositeRepository;
+
+    @Autowired
+    AuthEmbeddedCompositeRepository authEmbeddedCompositeRepository;
+
+    @Test
+    void setAuthEmbeddedCompositeRepositoryTest() {
+        NameId nameId = new NameId("Chamara", "Sumanapala");
+        AuthorEmbedded authorEmbedded = new AuthorEmbedded(nameId);
+
+        AuthorEmbedded savedAuthorEmbedded = authEmbeddedCompositeRepository.save(authorEmbedded);
+        assertThat(savedAuthorEmbedded).isNotNull();
+    }
 
     @Test
     void setAuthCompositeRepositoryTest() {

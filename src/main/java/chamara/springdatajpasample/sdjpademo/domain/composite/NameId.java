@@ -1,14 +1,18 @@
 package chamara.springdatajpasample.sdjpademo.domain.composite;
 
+import jakarta.persistence.Embeddable;
+
 import java.io.Serializable;
 import java.util.Objects;
 
+@Embeddable
 public class NameId implements Serializable {
     private String firstName;
     private String lastName;
 
-public NameId() {
+    public NameId() {
     }
+
     public NameId(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;

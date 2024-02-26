@@ -876,3 +876,189 @@ create table author_composite
 ```
 
 ### 60 - Embedded Composite Primary Key
+
+`AuthorEmbedded` class.
+
+```java
+package chamara.springdatajpasample.sdjpademo.domain.composite;
+
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "author_composite")
+public class AuthorEmbedded {
+    @EmbeddedId
+    private NameId nameId;
+
+    public AuthorEmbedded(NameId nameId) {
+        this.nameId = nameId;
+    }
+
+    public AuthorEmbedded() {
+    }
+
+    public NameId getNameId() {
+        return nameId;
+    }
+
+    public void setNameId(NameId nameId) {
+        this.nameId = nameId;
+    }
+}
+
+```
+
+`NameId` class.
+
+```java
+package chamara.springdatajpasample.sdjpademo.domain.composite;
+
+import jakarta.persistence.Embeddable;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+@Embeddable
+public class NameId implements Serializable {
+    private String firstName;
+    private String lastName;
+
+    public NameId() {
+    }
+
+    public NameId(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NameId nameId = (NameId) o;
+        return Objects.equals(firstName, nameId.firstName) && Objects.equals(lastName, nameId.lastName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName);
+    }
+
+    @Override
+    public String toString() {
+        return "NameId{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
+    }
+}
+```
+
+`AuthEmbeddedRepository` class.
+
+```java
+package chamara.springdatajpasample.sdjpademo.repositories;
+
+import chamara.springdatajpasample.sdjpademo.domain.composite.AuthorEmbedded;
+import chamara.springdatajpasample.sdjpademo.domain.composite.NameId;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface AuthEmbeddedCompositeRepository extends JpaRepository<AuthorEmbedded, NameId> {
+}
+```
+
+Test for the `AuthEmbeddedCompositeRepository` class.
+
+```java
+package chamara.springdatajpasample.sdjpademo;
+
+
+import chamara.springdatajpasample.sdjpademo.domain.BookNatural;
+import chamara.springdatajpasample.sdjpademo.domain.composite.AuthorComposite;
+import chamara.springdatajpasample.sdjpademo.domain.composite.AuthorEmbedded;
+import chamara.springdatajpasample.sdjpademo.domain.composite.NameId;
+import chamara.springdatajpasample.sdjpademo.repositories.AuthCompositeRepository;
+import chamara.springdatajpasample.sdjpademo.repositories.AuthEmbeddedCompositeRepository;
+import chamara.springdatajpasample.sdjpademo.repositories.BookNaturalRepository;
+import chamara.springdatajpasample.sdjpademo.repositories.BookRepository;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.ActiveProfiles;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@DataJpaTest
+@ComponentScan(basePackages = {"chamara.springdatajpasample.sdjpademo.bootstrap"})
+@ActiveProfiles("local")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+public class MySqlIT {
+    @Autowired
+    BookRepository bookRepository;
+
+    @Autowired
+    BookNaturalRepository bookNaturalRepository;
+
+    @Autowired
+    AuthCompositeRepository authCompositeRepository;
+
+    @Autowired
+    AuthEmbeddedCompositeRepository authEmbeddedCompositeRepository;
+
+    @Test
+    void setAuthEmbeddedCompositeRepositoryTest() {
+        NameId nameId = new NameId("Chamara", "Sumanapala");
+        AuthorEmbedded authorEmbedded = new AuthorEmbedded(nameId);
+
+        AuthorEmbedded savedAuthorEmbedded = authEmbeddedCompositeRepository.save(authorEmbedded);
+        assertThat(savedAuthorEmbedded).isNotNull();
+    }
+
+    @Test
+    void setAuthCompositeRepositoryTest() {
+        NameId nameId = new NameId("Chamara", "Sumanapala");
+        AuthorComposite authorComposite = new AuthorComposite();
+        authorComposite.setFirstName(nameId.getFirstName());
+        authorComposite.setLastName(nameId.getLastName());
+
+        AuthorComposite savedAuthorComposite = authCompositeRepository.save(authorComposite);
+        assertThat(savedAuthorComposite).isNotNull();
+    }
+
+    @Test
+    void bookNaturalTest() {
+        BookNatural bookNatural = new BookNatural();
+        bookNatural.setTitle("Spring Framework");
+
+        BookNatural savedBookNatural = bookNaturalRepository.save(bookNatural);
+        assertThat(savedBookNatural).isNotNull();
+    }
+
+    @Test
+    void testJPATestSliceTransaction() {
+        long count = bookRepository.count();
+        assertThat(count).isEqualTo(2);
+    }
+
+}
+```
