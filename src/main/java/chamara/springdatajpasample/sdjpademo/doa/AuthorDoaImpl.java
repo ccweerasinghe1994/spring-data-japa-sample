@@ -5,9 +5,9 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 @Component
 public class AuthorDoaImpl implements AuthorDoa {
@@ -21,12 +21,16 @@ public class AuthorDoaImpl implements AuthorDoa {
     @Override
     public Author getAuthorById(Long id) {
         Connection connection = null;
-        Statement statement = null;
         ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
         try {
             connection = dataSource.getConnection();
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM author WHERE id = " + id);
+            preparedStatement = connection.prepareStatement("SELECT * FROM author WHERE id = ?");
+            preparedStatement.setLong(1, id);
+//            this is not safe to use in production
+//            this could lead to SQL injection
+//            resultSet = statement.executeQuery("SELECT * FROM author WHERE id = " + id);
+            resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 Author author = new Author();
                 author.setId(resultSet.getLong("id"));
@@ -41,11 +45,11 @@ public class AuthorDoaImpl implements AuthorDoa {
                 if (resultSet != null) {
                     resultSet.close();
                 }
-                if (statement != null) {
-                    statement.close();
-                }
                 if (connection != null) {
                     connection.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
