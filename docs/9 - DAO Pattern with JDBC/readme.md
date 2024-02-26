@@ -279,6 +279,152 @@ public class AuthorDoaImpl implements AuthorDoa {
 
 ### 68 - Refactoring Duplicate Code
 
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+import chamara.springdatajpasample.sdjpademo.domain.Author;
+
+public interface AuthorDoa {
+    Author getAuthorById(Long id);
+
+    Author findAuthorByFirstName(String firstName);
+}
+
+```
+
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+import chamara.springdatajpasample.sdjpademo.domain.Author;
+import org.springframework.stereotype.Component;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+@Component
+public class AuthorDoaImpl implements AuthorDoa {
+
+    private final DataSource dataSource;
+
+    public AuthorDoaImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    private Author getAuthor(ResultSet resultSet) throws SQLException {
+        Author author = new Author();
+        author.setId(resultSet.getLong("id"));
+        author.setFirstName(resultSet.getString("first_name"));
+        author.setLastName(resultSet.getString("last_name"));
+        return author;
+    }
+
+    @Override
+    public Author getAuthorById(Long id) {
+        Connection connection = null;
+        ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = dataSource.getConnection();
+            preparedStatement = connection.prepareStatement("SELECT * FROM author WHERE id = ?");
+            preparedStatement.setLong(1, id);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return getAuthor(resultSet);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                closeAllConnections(connection, resultSet, preparedStatement);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return null;
+    }
+
+    private void closeAllConnections(Connection connection, ResultSet resultSet, PreparedStatement preparedStatement) throws SQLException {
+        try {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Author findAuthorByFirstName(String firstName) {
+        Connection connection = null;
+        ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = dataSource.getConnection();
+            preparedStatement = connection.prepareStatement("SELECT * FROM author WHERE first_name = ?");
+            preparedStatement.setString(1, firstName);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return getAuthor(resultSet);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                closeAllConnections(connection, resultSet, preparedStatement);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+}
+
+```
+
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+import chamara.springdatajpasample.sdjpademo.domain.Author;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.ActiveProfiles;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@ActiveProfiles("local")
+@DataJpaTest
+@ComponentScan(basePackages = "chamara.springdatajpasample.sdjpademo.doa")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+class AuthorDoaImplTest {
+    @Autowired
+    AuthorDoa authorDoa;
+
+    @Test
+    void itShouldReturnAuthorWhenIdIsProvided() {
+        Author author = authorDoa.getAuthorById(1L);
+        assertThat(author).isNotNull();
+    }
+
+    @Test
+    void itShouldReturnAuthorWhenFirstNameIsProvided() {
+        Author author = authorDoa.findAuthorByFirstName("Craig");
+        assertThat(author).isNotNull();
+    }
+}
+```
+
 ### 69 - Save New Author
 
 ### 70 - Update Author
@@ -287,12 +433,12 @@ public class AuthorDoaImpl implements AuthorDoa {
 
 ### 72 - Refactor Author id to Author
 
-###                               
+###                                
 
-###                               
+###                                
 
-###                               
+###                                
 
-###                               
+###                                
 
-###                               
+###                                
