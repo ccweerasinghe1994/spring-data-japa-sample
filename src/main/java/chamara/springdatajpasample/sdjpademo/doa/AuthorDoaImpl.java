@@ -18,6 +18,14 @@ public class AuthorDoaImpl implements AuthorDoa {
         this.dataSource = dataSource;
     }
 
+    private Author getAuthor(ResultSet resultSet) throws SQLException {
+        Author author = new Author();
+        author.setId(resultSet.getLong("id"));
+        author.setFirstName(resultSet.getString("first_name"));
+        author.setLastName(resultSet.getString("last_name"));
+        return author;
+    }
+
     @Override
     public Author getAuthorById(Long id) {
         Connection connection = null;
@@ -27,32 +35,58 @@ public class AuthorDoaImpl implements AuthorDoa {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement("SELECT * FROM author WHERE id = ?");
             preparedStatement.setLong(1, id);
-//            this is not safe to use in production
-//            this could lead to SQL injection
-//            resultSet = statement.executeQuery("SELECT * FROM author WHERE id = " + id);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                Author author = new Author();
-                author.setId(resultSet.getLong("id"));
-                author.setFirstName(resultSet.getString("first_name"));
-                author.setLastName(resultSet.getString("last_name"));
-                return author;
+                return getAuthor(resultSet);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
             try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
+                closeAllConnections(connection, resultSet, preparedStatement);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
+            }
+        }
+        return null;
+    }
+
+    private void closeAllConnections(Connection connection, ResultSet resultSet, PreparedStatement preparedStatement) throws SQLException {
+        try {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Author findAuthorByFirstName(String firstName) {
+        Connection connection = null;
+        ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = dataSource.getConnection();
+            preparedStatement = connection.prepareStatement("SELECT * FROM author WHERE first_name = ?");
+            preparedStatement.setString(1, firstName);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return getAuthor(resultSet);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                closeAllConnections(connection, resultSet, preparedStatement);
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
         return null;

@@ -19,8 +19,14 @@ class AuthorDoaImplTest {
     AuthorDoa authorDoa;
 
     @Test
-    void itShouldName() {
+    void itShouldReturnAuthorWhenIdIsProvided() {
         Author author = authorDoa.getAuthorById(1L);
+        assertThat(author).isNotNull();
+    }
+
+    @Test
+    void itShouldReturnAuthorWhenFirstNameIsProvided() {
+        Author author = authorDoa.findAuthorByFirstName("Craig");
         assertThat(author).isNotNull();
     }
 }
