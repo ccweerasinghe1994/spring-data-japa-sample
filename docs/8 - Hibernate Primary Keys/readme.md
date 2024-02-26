@@ -439,7 +439,206 @@ create table book_uuid (
 ```
 
 ![img_11.png](img_11.png)
-### 57 - H2 Workaround
 ### 58 - Natural Primary Key
+this is not a good practice
+
+`BookNatural` class.
+
+```java
+package chamara.springdatajpasample.sdjpademo.domain;
+
+import jakarta.persistence.*;
+
+@Entity
+public class BookNatural {
+    private String isbn;
+    @Id
+    private String title;
+    private String publisher;
+
+
+    public BookNatural() {
+
+    }
+    public BookNatural(String isbn, String title, String publisher) {
+        this.isbn = isbn;
+        this.title = title;
+        this.publisher = publisher;
+    }
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+}
+```
+Repository for the `BookNatural` class.
+
+```java
+package chamara.springdatajpasample.sdjpademo.repositories;
+
+import chamara.springdatajpasample.sdjpademo.domain.BookNatural;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BookNaturalRepository extends JpaRepository<BookNatural, Long> {
+}
+
+```
+
+add sample data to the `BookNatural` class.
+
+```java
+package chamara.springdatajpasample.sdjpademo.bootstrap;
+
+import chamara.springdatajpasample.sdjpademo.domain.AuthorUuid;
+import chamara.springdatajpasample.sdjpademo.domain.Book;
+import chamara.springdatajpasample.sdjpademo.domain.BookNatural;
+import chamara.springdatajpasample.sdjpademo.domain.BookUuid;
+import chamara.springdatajpasample.sdjpademo.repositories.AuthUuidRepository;
+import chamara.springdatajpasample.sdjpademo.repositories.BookNaturalRepository;
+import chamara.springdatajpasample.sdjpademo.repositories.BookRepository;
+import chamara.springdatajpasample.sdjpademo.repositories.BookUuidRepository;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
+
+@Component
+@Profile({"local", "default"})
+public class DataInitializer implements CommandLineRunner {
+    private final BookRepository bookRepository;
+    private final AuthUuidRepository authUuidRepository;
+    private final BookUuidRepository bookUuidRepository;
+    private final BookNaturalRepository bookNaturalRepository;
+    public DataInitializer(BookRepository bookRepository, AuthUuidRepository authUuidRepository, BookUuidRepository bookUuidRepository,BookNaturalRepository bookNaturalRepository) {
+        this.bookRepository = bookRepository;
+        this.authUuidRepository = authUuidRepository;
+        this.bookUuidRepository = bookUuidRepository;
+        this.bookNaturalRepository = bookNaturalRepository;
+
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        System.out.println("Bootstrap started");
+        System.out.println("Clearing all data");
+        bookRepository.deleteAll();
+        System.out.println("Clearing all data completed");
+
+        Book book = new Book("1234", "Spring Framework", "Chamara",null);
+        System.out.println("Book ID: " + book.getId());
+        Book savedResponse1 = bookRepository.save(book);
+        System.out.println("Book ID: " + savedResponse1.getId());
+
+        Book book1 = new Book("12332", "Harry Potter", "JK Rowling",null);
+        System.out.println("Book ID: " + book1.getId());
+        Book savedResponse2 = bookRepository.save(book1);
+        System.out.println("Book ID: " + savedResponse2.getId());
+
+        bookRepository.findAll().forEach(book2 -> {
+            System.out.println(book2.getId());
+            System.out.println(book2.getTitle());
+        });
+
+        AuthorUuid authorUuid = new AuthorUuid();
+        authorUuid.setFirstName("Chamara");
+        authorUuid.setLastName("Sumanapala");
+        AuthorUuid saved = authUuidRepository.save(authorUuid);
+        System.out.println("Author ID: " + saved.getId());
+
+        BookUuid bookUuid = new BookUuid();
+        bookUuid.setTitle("Spring Framework");
+
+        BookUuid savedBookUuid = bookUuidRepository.save(bookUuid);
+        System.out.println("Book UUID: " + savedBookUuid.getId());
+
+        BookNatural bookNatural = new BookNatural();
+        bookNatural.setTitle("New Book");
+        BookNatural savedBookNatural = bookNaturalRepository.save(bookNatural);
+        System.out.println("Book Natural: " + savedBookNatural.getTitle());
+
+    }
+}
+
+```
+
+let's add a new test.
+```java
+package chamara.springdatajpasample.sdjpademo;
+
+
+import chamara.springdatajpasample.sdjpademo.domain.BookNatural;
+import chamara.springdatajpasample.sdjpademo.repositories.BookNaturalRepository;
+import chamara.springdatajpasample.sdjpademo.repositories.BookRepository;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.ActiveProfiles;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@DataJpaTest
+@ComponentScan(basePackages = {"chamara.springdatajpasample.sdjpademo.bootstrap"})
+@ActiveProfiles("local")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+public class MySqlIT {
+    @Autowired
+    BookRepository bookRepository;
+
+    @Autowired
+    BookNaturalRepository bookNaturalRepository;
+
+    @Test
+    void bookNaturalTest() {
+        BookNatural bookNatural = new BookNatural();
+        bookNatural.setTitle("Spring Framework");
+
+        BookNatural savedBookNatural = bookNaturalRepository.save(bookNatural);
+        assertThat(savedBookNatural).isNotNull();
+    }
+
+    @Test
+    void testJPATestSliceTransaction() {
+        long count = bookRepository.count();
+        assertThat(count).isEqualTo(2);
+    }
+
+}
+
+```
+
+let's create a new flyway migration file.
+
+```sql
+create table book_natural (
+
+                      title varchar(255),
+                      isbn varchar(255),
+                      publisher varchar(255),
+                      primary key (title)
+) engine=InnoDB;
+
+```
 ### 59 - Composite Primary Key
 ### 60 - Embedded Composite Primary Key
