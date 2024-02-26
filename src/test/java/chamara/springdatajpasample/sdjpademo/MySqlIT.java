@@ -2,9 +2,11 @@ package chamara.springdatajpasample.sdjpademo;
 
 
 import chamara.springdatajpasample.sdjpademo.domain.BookNatural;
+import chamara.springdatajpasample.sdjpademo.domain.composite.AuthorComposite;
+import chamara.springdatajpasample.sdjpademo.domain.composite.NameId;
+import chamara.springdatajpasample.sdjpademo.repositories.AuthCompositeRepository;
 import chamara.springdatajpasample.sdjpademo.repositories.BookNaturalRepository;
 import chamara.springdatajpasample.sdjpademo.repositories.BookRepository;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -24,6 +26,20 @@ public class MySqlIT {
 
     @Autowired
     BookNaturalRepository bookNaturalRepository;
+
+    @Autowired
+    AuthCompositeRepository authCompositeRepository;
+
+    @Test
+    void setAuthCompositeRepositoryTest() {
+        NameId nameId = new NameId("Chamara", "Sumanapala");
+        AuthorComposite authorComposite = new AuthorComposite();
+        authorComposite.setFirstName(nameId.getFirstName());
+        authorComposite.setLastName(nameId.getLastName());
+
+        AuthorComposite savedAuthorComposite = authCompositeRepository.save(authorComposite);
+        assertThat(savedAuthorComposite).isNotNull();
+    }
 
     @Test
     void bookNaturalTest() {
