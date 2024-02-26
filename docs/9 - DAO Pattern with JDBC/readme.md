@@ -566,14 +566,85 @@ public Author updateAuthor(Author author) {
 
 ### 71 - Delete Author
 
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+import chamara.springdatajpasample.sdjpademo.domain.Author;
+
+public interface AuthorDoa {
+    Author getAuthorById(Long id);
+
+    Author findAuthorByFirstName(String firstName);
+
+    Author saveAuthor(Author author);
+
+    Author updateAuthor(Author author);
+
+    Author deleteAuthor(Long id);
+}
+
+```
+
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+@Override
+public Author deleteAuthor(Long id) {
+
+    Connection connection = null;
+    ResultSet resultSet = null;
+    PreparedStatement preparedStatement = null;
+    Author deletedAuthor = null;
+    try {
+        connection = dataSource.getConnection();
+        preparedStatement = connection.prepareStatement("SELECT * FROM author WHERE id = ?");
+        preparedStatement.setLong(1, id);
+        resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            deletedAuthor = getAuthor(resultSet);
+        }
+        preparedStatement = connection.prepareStatement("DELETE FROM author WHERE id = ?");
+        preparedStatement.setLong(1, id);
+        preparedStatement.executeUpdate();
+        return deletedAuthor;
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
+    } finally {
+        try {
+            closeAllConnections(connection, resultSet, preparedStatement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+```
+
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+@Test
+void itShouldDeleteTheAuthor() {
+    // given
+    Author author = new Author();
+    author.setFirstName("John");
+    author.setLastName("Doe");
+    Author savedAuthor = authorDoa.saveAuthor(author);
+    Long id = savedAuthor.getId();
+    // when
+    Author deletedAuthorId = authorDoa.deleteAuthor(id);
+    // then
+    assertThat(savedAuthor.getId()).isEqualTo(deletedAuthorId.getId());
+}
+```
+
 ### 72 - Refactor Author id to Author
 
-###                                       
+###                                          
 
-###                                       
+###                                          
 
-###                                       
+###                                          
 
-###                                       
+###                                          
 
-###                                       
+###                                          

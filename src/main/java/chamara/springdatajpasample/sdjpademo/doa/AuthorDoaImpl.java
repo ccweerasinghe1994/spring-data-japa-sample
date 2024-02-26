@@ -150,4 +150,34 @@ public class AuthorDoaImpl implements AuthorDoa {
         }
         return null;
     }
+
+    @Override
+    public Author deleteAuthor(Long id) {
+
+        Connection connection = null;
+        ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
+        Author deletedAuthor = null;
+        try {
+            connection = dataSource.getConnection();
+            preparedStatement = connection.prepareStatement("SELECT * FROM author WHERE id = ?");
+            preparedStatement.setLong(1, id);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                deletedAuthor = getAuthor(resultSet);
+            }
+            preparedStatement = connection.prepareStatement("DELETE FROM author WHERE id = ?");
+            preparedStatement.setLong(1, id);
+            preparedStatement.executeUpdate();
+            return deletedAuthor;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                closeAllConnections(connection, resultSet, preparedStatement);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }

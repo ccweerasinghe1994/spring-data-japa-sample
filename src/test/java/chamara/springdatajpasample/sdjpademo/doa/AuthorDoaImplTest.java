@@ -53,4 +53,18 @@ class AuthorDoaImplTest {
         // then
         assertThat(savedAuthor.getLastName()).isEqualTo(updateAuthor.getLastName());
     }
+
+    @Test
+    void itShouldDeleteTheAuthor() {
+        // given
+        Author author = new Author();
+        author.setFirstName("John");
+        author.setLastName("Doe");
+        Author savedAuthor = authorDoa.saveAuthor(author);
+        Long id = savedAuthor.getId();
+        // when
+        Author deletedAuthorId = authorDoa.deleteAuthor(id);
+        // then
+        assertThat(savedAuthor.getId()).isEqualTo(deletedAuthorId.getId());
+    }
 }

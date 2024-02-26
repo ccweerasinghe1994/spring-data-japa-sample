@@ -10,4 +10,6 @@ public interface AuthorDoa {
     Author saveAuthor(Author author);
 
     Author updateAuthor(Author author);
+
+    Author deleteAuthor(Long id);
 }
