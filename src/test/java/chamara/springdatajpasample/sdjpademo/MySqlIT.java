@@ -24,8 +24,6 @@ public class MySqlIT {
     void testJPATestSliceTransaction() {
         long count = bookRepository.count();
         assertThat(count).isEqualTo(2);
-
-
     }
 
 }

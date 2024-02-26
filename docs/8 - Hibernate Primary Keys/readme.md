@@ -68,6 +68,9 @@ create table bookdb.author
 ```
 
 ### 54 - Vendor Specific Flyway Migrations
+
+![img_8.png](img_8.png)
+
 ### 55 - UUID Primary Key
 ### 56 - UUID RFC 4122 Primary Key
 ### 57 - H2 Workaround
