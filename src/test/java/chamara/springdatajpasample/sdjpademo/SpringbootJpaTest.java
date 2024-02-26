@@ -29,7 +29,7 @@ public class SpringbootJpaTest {
     void testJPATestSlice() {
         long count = bookRepository.count();
 
-        Book book = new Book("1234", "Spring Framework", "Chamara");
+        Book book = new Book("1234", "Spring Framework", "Chamara",null);
 
         bookRepository.save(book);
 
