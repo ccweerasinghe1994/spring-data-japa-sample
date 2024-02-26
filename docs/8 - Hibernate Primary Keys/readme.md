@@ -101,10 +101,166 @@ and change the `application.properties` file to use the h2 database.
 ```properties
 spring.flyway.locations=classpath:db/migration/common,classpath:db/migration/{vendor}
 ```
-
 ### 55 - UUID Primary Key
+let's create a new entity class called `AuthorUuid`
 
+```java
+package chamara.springdatajpasample.sdjpademo.domain;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+
+import java.sql.Types;
+import java.util.Objects;
+import java.util.UUID;
+
+@Entity
+public class AuthorUuid {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @JdbcTypeCode(value = Types.VARCHAR)
+    @Column(nullable = false,length = 36, columnDefinition = "VARCHAR(36)",updatable = false)
+    private UUID id;
+
+    private String firstName;
+
+    private String lastName;
+
+    public AuthorUuid() {
+    }
+
+    public AuthorUuid(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AuthorUuid author = (AuthorUuid) o;
+        return Objects.equals(id, author.id) && Objects.equals(firstName, author.firstName) && Objects.equals(lastName, author.lastName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName);
+    }
+
+    @Override
+    public String toString() {
+        return "Author{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
+    }
+}
+
+```
+let's create a repository for the `AuthorUuid` class.
+
+```java
+package chamara.springdatajpasample.sdjpademo.repositories;
+
+import chamara.springdatajpasample.sdjpademo.domain.AuthorUuid;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface AuthUuidRepository extends JpaRepository<AuthorUuid, Long> {
+}
+```
+
+let's add sample data to the `AuthorUuid` class.
+
+```java
+package chamara.springdatajpasample.sdjpademo.bootstrap;
+
+import chamara.springdatajpasample.sdjpademo.domain.AuthorUuid;
+import chamara.springdatajpasample.sdjpademo.domain.Book;
+import chamara.springdatajpasample.sdjpademo.repositories.AuthUuidRepository;
+import chamara.springdatajpasample.sdjpademo.repositories.BookRepository;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
+
+@Component
+@Profile({"local", "default"})
+public class DataInitializer implements CommandLineRunner {
+    private final BookRepository bookRepository;
+    private final AuthUuidRepository authUuidRepository;
+    public DataInitializer(BookRepository bookRepository,AuthUuidRepository authUuidRepository) {
+        this.bookRepository = bookRepository;
+        this.authUuidRepository = authUuidRepository;
+
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        System.out.println("Bootstrap started");
+        System.out.println("Clearing all data");
+        bookRepository.deleteAll();
+        System.out.println("Clearing all data completed");
+
+        Book book = new Book("1234", "Spring Framework", "Chamara",null);
+        System.out.println("Book ID: " + book.getId());
+        Book savedResponse1 = bookRepository.save(book);
+        System.out.println("Book ID: " + savedResponse1.getId());
+
+        Book book1 = new Book("12332", "Harry Potter", "JK Rowling",null);
+        System.out.println("Book ID: " + book1.getId());
+        Book savedResponse2 = bookRepository.save(book1);
+        System.out.println("Book ID: " + savedResponse2.getId());
+
+        bookRepository.findAll().forEach(book2 -> {
+            System.out.println(book2.getId());
+            System.out.println(book2.getTitle());
+        });
+
+        AuthorUuid authorUuid = new AuthorUuid();
+        authorUuid.setFirstName("Chamara");
+        authorUuid.setLastName("Sumanapala");
+        AuthorUuid saved = authUuidRepository.save(authorUuid);
+        System.out.println("Author ID: " + saved.getId());
+
+    }
+}
+```
+
+![img_10.png](img_10.png)
+
+let's create a new flyway migration file.
+```sql
+create table author_uuid(
+    id varchar(36) not null,
+    first_name varchar(255),
+    last_name varchar(255),
+    primary key (id)
+) engine = InnoDB;
+```
 ### 56 - UUID RFC 4122 Primary Key
 ### 57 - H2 Workaround
 ### 58 - Natural Primary Key

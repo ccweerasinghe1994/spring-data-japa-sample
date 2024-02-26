@@ -1,6 +1,8 @@
 package chamara.springdatajpasample.sdjpademo.bootstrap;
 
+import chamara.springdatajpasample.sdjpademo.domain.AuthorUuid;
 import chamara.springdatajpasample.sdjpademo.domain.Book;
+import chamara.springdatajpasample.sdjpademo.repositories.AuthUuidRepository;
 import chamara.springdatajpasample.sdjpademo.repositories.BookRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -10,8 +12,11 @@ import org.springframework.stereotype.Component;
 @Profile({"local", "default"})
 public class DataInitializer implements CommandLineRunner {
     private final BookRepository bookRepository;
-    public DataInitializer(BookRepository bookRepository) {
+    private final AuthUuidRepository authUuidRepository;
+    public DataInitializer(BookRepository bookRepository,AuthUuidRepository authUuidRepository) {
         this.bookRepository = bookRepository;
+        this.authUuidRepository = authUuidRepository;
+
     }
 
     @Override
@@ -35,5 +40,12 @@ public class DataInitializer implements CommandLineRunner {
             System.out.println(book2.getId());
             System.out.println(book2.getTitle());
         });
+
+        AuthorUuid authorUuid = new AuthorUuid();
+        authorUuid.setFirstName("Chamara");
+        authorUuid.setLastName("Sumanapala");
+        AuthorUuid saved = authUuidRepository.save(authorUuid);
+        System.out.println("Author ID: " + saved.getId());
+
     }
 }
