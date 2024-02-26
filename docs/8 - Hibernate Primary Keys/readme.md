@@ -8,6 +8,65 @@
 ![img_5.png](img_5.png)
 ![img_6.png](img_6.png)
 ### 53 - Auto Incremented Primary Key
+
+let's change the `id` field to `Long` and add `@GeneratedValue(strategy = GenerationType.IDENTITY)` to the `id` field.
+
+```java
+@Entity
+public class Author {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+```
+let's do the same for the Author class.
+
+```java
+
+@Entity
+public class Author {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+```
+`@GeneratedValue(strategy = GenerationType.IDENTITY)` is used to generate a value for the primary key field.
+The `strategy` attribute is used to specify the generation strategy. The `GenerationType.IDENTITY` strategy is used to generate a value for the primary key field using the `auto-increment` feature of the database.
+
+`@GeneratedValue(strategy = GenerationType.AUTO)` is used to generate a value for the primary key field.
+The `strategy` attribute is used to specify the generation strategy. The `GenerationType.AUTO` Hibernate
+is going to use a sequence table to generate the table.
+
+using auto increment is the best way to generate primary keys.it is the most efficient way to generate primary keys.
+it is also the most portable way to generate primary keys.
+it is more performant than using a sequence table.
+
+what is a sql sequence?
+a sequence is a database object that generates a sequence of numbers. it is often used to generate unique primary keys.
+
+what is a sequence table?
+a sequence table is a database table that is used to generate a sequence of numbers. it is often used to generate unique primary keys.
+
+let's create a new flyway migration.
+
+```sql
+alter table book change id id BIGINT auto_increment;
+alter table author change id id BIGINT auto_increment;
+```
+and run the application.
+
+![img_7.png](img_7.png)
+
+```sql
+create table bookdb.author
+(
+    id         bigint auto_increment
+        primary key,
+    first_name varchar(255) null,
+    last_name  varchar(255) null
+);
+
+
+```
+
 ### 54 - Vendor Specific Flyway Migrations
 ### 55 - UUID Primary Key
 ### 56 - UUID RFC 4122 Primary Key
