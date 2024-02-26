@@ -38,4 +38,19 @@ class AuthorDoaImplTest {
         Author savedAuthor = authorDoa.saveAuthor(author);
         assertThat(savedAuthor).isNotNull();
     }
+
+    @Test
+    void itShouldUpdateAuthor() {
+        // given
+        Author author = new Author();
+        author.setFirstName("John");
+        author.setLastName("Doe");
+        Author savedAuthor = authorDoa.saveAuthor(author);
+        savedAuthor.setLastName("Updated");
+
+        // when
+        Author updateAuthor = authorDoa.updateAuthor(savedAuthor);
+        // then
+        assertThat(savedAuthor.getLastName()).isEqualTo(updateAuthor.getLastName());
+    }
 }

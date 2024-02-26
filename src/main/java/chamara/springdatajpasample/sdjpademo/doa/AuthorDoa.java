@@ -8,4 +8,6 @@ public interface AuthorDoa {
     Author findAuthorByFirstName(String firstName);
 
     Author saveAuthor(Author author);
+
+    Author updateAuthor(Author author);
 }

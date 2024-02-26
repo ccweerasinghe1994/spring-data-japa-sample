@@ -490,16 +490,90 @@ void itShouldSaveAuthor() {
 
 ### 70 - Update Author
 
+let's write the test case for the `update` method.
+
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+@Test
+void itShouldUpdateAuthor() {
+    // given
+    Author author = new Author();
+    author.setFirstName("John");
+    author.setLastName("Doe");
+    Author savedAuthor = authorDoa.saveAuthor(author);
+    savedAuthor.setLastName("Updated");
+
+    // when
+    Author updateAuthor = authorDoa.updateAuthor(savedAuthor);
+    // then
+    assertThat(savedAuthor.getLastName()).isEqualTo(updateAuthor.getLastName());
+}
+```
+
+let's add the new method to the `AuthorDoa` interface.
+
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+import chamara.springdatajpasample.sdjpademo.domain.Author;
+
+public interface AuthorDoa {
+    Author getAuthorById(Long id);
+
+    Author findAuthorByFirstName(String firstName);
+
+    Author saveAuthor(Author author);
+
+    Author updateAuthor(Author author);
+}
+```
+
+let's implement the `update` method.
+
+```java
+
+@Override
+public Author updateAuthor(Author author) {
+    Connection connection = null;
+    ResultSet resultSet = null;
+    PreparedStatement preparedStatement = null;
+    try {
+        connection = dataSource.getConnection();
+        preparedStatement = connection.prepareStatement("UPDATE author SET first_name = ?, last_name = ? WHERE id = ?");
+        preparedStatement.setString(1, author.getFirstName());
+        preparedStatement.setString(2, author.getLastName());
+        preparedStatement.setLong(3, author.getId());
+        preparedStatement.executeUpdate();
+        preparedStatement = connection.prepareStatement("SELECT * FROM author WHERE first_name = ?");
+        preparedStatement.setString(1, author.getFirstName());
+        resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            return getAuthor(resultSet);
+        }
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
+    } finally {
+        try {
+            closeAllConnections(connection, resultSet, preparedStatement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    return null;
+}
+```
+
 ### 71 - Delete Author
 
 ### 72 - Refactor Author id to Author
 
-###                                   
+###                                       
 
-###                                   
+###                                       
 
-###                                   
+###                                       
 
-###                                   
+###                                       
 
-###                                   
+###                                       
