@@ -2,8 +2,10 @@ package chamara.springdatajpasample.sdjpademo.bootstrap;
 
 import chamara.springdatajpasample.sdjpademo.domain.AuthorUuid;
 import chamara.springdatajpasample.sdjpademo.domain.Book;
+import chamara.springdatajpasample.sdjpademo.domain.BookUuid;
 import chamara.springdatajpasample.sdjpademo.repositories.AuthUuidRepository;
 import chamara.springdatajpasample.sdjpademo.repositories.BookRepository;
+import chamara.springdatajpasample.sdjpademo.repositories.BookUuidRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -13,9 +15,11 @@ import org.springframework.stereotype.Component;
 public class DataInitializer implements CommandLineRunner {
     private final BookRepository bookRepository;
     private final AuthUuidRepository authUuidRepository;
-    public DataInitializer(BookRepository bookRepository,AuthUuidRepository authUuidRepository) {
+    private final BookUuidRepository bookUuidRepository;
+    public DataInitializer(BookRepository bookRepository, AuthUuidRepository authUuidRepository, BookUuidRepository bookUuidRepository) {
         this.bookRepository = bookRepository;
         this.authUuidRepository = authUuidRepository;
+        this.bookUuidRepository = bookUuidRepository;
 
     }
 
@@ -46,6 +50,12 @@ public class DataInitializer implements CommandLineRunner {
         authorUuid.setLastName("Sumanapala");
         AuthorUuid saved = authUuidRepository.save(authorUuid);
         System.out.println("Author ID: " + saved.getId());
+
+        BookUuid bookUuid = new BookUuid();
+        bookUuid.setTitle("Spring Framework");
+
+        BookUuid savedBookUuid = bookUuidRepository.save(bookUuid);
+        System.out.println("Book UUID: " + savedBookUuid.getId());
 
     }
 }
