@@ -427,18 +427,79 @@ class AuthorDoaImplTest {
 
 ### 69 - Save New Author
 
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+import chamara.springdatajpasample.sdjpademo.domain.Author;
+
+public interface AuthorDoa {
+    Author getAuthorById(Long id);
+
+    Author findAuthorByFirstName(String firstName);
+
+    Author saveAuthor(Author author);
+}
+
+```
+
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+@Override
+public Author saveAuthor(Author author) {
+    Connection connection = null;
+    ResultSet resultSet = null;
+    PreparedStatement preparedStatement = null;
+    try {
+        connection = dataSource.getConnection();
+        preparedStatement = connection.prepareStatement("INSERT INTO author (first_name, last_name) VALUES (?, ?)");
+        preparedStatement.setString(1, author.getFirstName());
+        preparedStatement.setString(2, author.getLastName());
+        preparedStatement.executeUpdate();
+        preparedStatement = connection.prepareStatement("SELECT * FROM author WHERE first_name = ?");
+        preparedStatement.setString(1, author.getFirstName());
+        resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            return getAuthor(resultSet);
+        }
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
+    } finally {
+        try {
+            closeAllConnections(connection, resultSet, preparedStatement);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    return null;
+}
+```
+
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+@Test
+void itShouldSaveAuthor() {
+    Author author = new Author();
+    author.setFirstName("John");
+    author.setLastName("Doe");
+    Author savedAuthor = authorDoa.saveAuthor(author);
+    assertThat(savedAuthor).isNotNull();
+}
+```
+
 ### 70 - Update Author
 
 ### 71 - Delete Author
 
 ### 72 - Refactor Author id to Author
 
-###                                
+###                                   
 
-###                                
+###                                   
 
-###                                
+###                                   
 
-###                                
+###                                   
 
-###                                
+###                                   

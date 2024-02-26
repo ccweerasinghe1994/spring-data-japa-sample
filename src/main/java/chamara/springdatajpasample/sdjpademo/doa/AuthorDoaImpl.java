@@ -91,4 +91,33 @@ public class AuthorDoaImpl implements AuthorDoa {
         }
         return null;
     }
+
+    @Override
+    public Author saveAuthor(Author author) {
+        Connection connection = null;
+        ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = dataSource.getConnection();
+            preparedStatement = connection.prepareStatement("INSERT INTO author (first_name, last_name) VALUES (?, ?)");
+            preparedStatement.setString(1, author.getFirstName());
+            preparedStatement.setString(2, author.getLastName());
+            preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement("SELECT * FROM author WHERE first_name = ?");
+            preparedStatement.setString(1, author.getFirstName());
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return getAuthor(resultSet);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                closeAllConnections(connection, resultSet, preparedStatement);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return null;
+    }
 }

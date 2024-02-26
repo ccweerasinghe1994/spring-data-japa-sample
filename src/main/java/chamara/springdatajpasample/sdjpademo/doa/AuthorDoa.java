@@ -6,4 +6,6 @@ public interface AuthorDoa {
     Author getAuthorById(Long id);
 
     Author findAuthorByFirstName(String firstName);
+
+    Author saveAuthor(Author author);
 }

@@ -29,4 +29,13 @@ class AuthorDoaImplTest {
         Author author = authorDoa.findAuthorByFirstName("Craig");
         assertThat(author).isNotNull();
     }
+
+    @Test
+    void itShouldSaveAuthor() {
+        Author author = new Author();
+        author.setFirstName("John");
+        author.setLastName("Doe");
+        Author savedAuthor = authorDoa.saveAuthor(author);
+        assertThat(savedAuthor).isNotNull();
+    }
 }
