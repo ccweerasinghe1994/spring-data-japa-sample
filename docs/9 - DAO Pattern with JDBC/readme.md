@@ -12,6 +12,65 @@
 
 ### 63 - Create Author DAO
 
+let's create the DAO interface and the implementation class for the `Author` entity.
+
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+import chamara.springdatajpasample.sdjpademo.domain.Author;
+
+public interface AuthorDoa {
+    Author getAuthorById(Long id);
+}
+```
+
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+import chamara.springdatajpasample.sdjpademo.domain.Author;
+import org.springframework.stereotype.Component;
+
+@Component
+public class AuthorDoaImpl implements AuthorDoa {
+    @Override
+    public Author getAuthorById(Long id) {
+        return null;
+    }
+}
+
+```
+
+let's create a test class to test the `AuthorDoa` implementation.
+
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+import chamara.springdatajpasample.sdjpademo.domain.Author;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.ActiveProfiles;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@ActiveProfiles("local")
+@DataJpaTest
+@ComponentScan(basePackages = "chamara.springdatajpasample.sdjpademo.doa")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+class AuthorDoaImplTest {
+    @Autowired
+    AuthorDoa authorDoa;
+
+    @Test
+    void itShouldName() {
+        Author author = authorDoa.getAuthorById(1L);
+        assertThat(author).isNotNull();
+    }
+}
+```
+
 ### 64 - Implement Get Author By Id
 
 ### 65 - Release Database Resources
@@ -30,12 +89,12 @@
 
 ### 72 - Refactor Author id to Author
 
-###                    
+###                     
 
-###                    
+###                     
 
-###                    
+###                     
 
-###                    
+###                     
 
-###                    
+###                     
