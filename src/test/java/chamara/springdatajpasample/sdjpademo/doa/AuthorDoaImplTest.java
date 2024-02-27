@@ -30,9 +30,7 @@ class AuthorDoaImplTest {
         book.setIsbn("1234");
         book.setPublisher("Self");
         book.setTitle("my book");
-        Author author = new Author();
-        author.setId(3L);
-        book.setAuthor(author);
+        book.setAuthorId(3L);
         Book saved = bookDao.saveNewBook(book);
 
         bookDao.deleteBookById(saved.getId());
@@ -48,9 +46,7 @@ class AuthorDoaImplTest {
         book.setIsbn("1234");
         book.setPublisher("Self");
         book.setTitle("my book");
-        Author author = new Author();
-        author.setId(3L);
-        book.setAuthor(author);
+        book.setAuthorId(3L);
         Book saved = bookDao.saveNewBook(book);
 
         saved.setTitle("New Book");
@@ -67,9 +63,7 @@ class AuthorDoaImplTest {
         book.setIsbn("1234");
         book.setPublisher("Self");
         book.setTitle("my book");
-        Author author = new Author();
-        author.setId(3L);
-        book.setAuthor(author);
+        book.setAuthorId(3L);
         Book saved = bookDao.saveNewBook(book);
 
         assertThat(saved).isNotNull();

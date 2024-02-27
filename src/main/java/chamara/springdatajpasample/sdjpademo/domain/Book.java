@@ -1,6 +1,9 @@
 package chamara.springdatajpasample.sdjpademo.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 import java.util.Objects;
 
@@ -12,14 +15,14 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Transient
-    private Author authorId;
+
+    private Long authorId;
 
     public Book() {
 
     }
 
-    public Book(String isbn, String title, String publisher, Author authorId) {
+    public Book(String isbn, String title, String publisher, Long authorId) {
         this.isbn = isbn;
         this.title = title;
         this.publisher = publisher;
@@ -58,11 +61,11 @@ public class Book {
         this.id = id;
     }
 
-    public Author getAuthor() {
+    public Long getAuthorId() {
         return authorId;
     }
 
-    public void setAuthor(Author authorId) {
+    public void setAuthorId(Long authorId) {
         this.authorId = authorId;
     }
 
