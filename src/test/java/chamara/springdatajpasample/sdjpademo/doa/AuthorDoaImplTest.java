@@ -2,11 +2,13 @@ package chamara.springdatajpasample.sdjpademo.doa;
 
 import chamara.springdatajpasample.sdjpademo.domain.Author;
 import chamara.springdatajpasample.sdjpademo.domain.Book;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -90,16 +92,13 @@ class AuthorDoaImplTest {
     @Test
     void testDeleteAuthor() {
         Author author = new Author();
-        author.setFirstName("john");
-        author.setLastName("t");
+        author.setFirstName("john11111111111");
+        author.setLastName("t1111111111111111111");
 
         Author saved = authorDao.saveAuthor(author);
 
         authorDao.deleteAuthor(saved.getId());
-
-        Author deleted = authorDao.getAuthorById(saved.getId());
-
-        assertThat(deleted).isNull();
+        Assertions.assertThrows(DataAccessException.class, () -> authorDao.getAuthorById(saved.getId()));
     }
 
     @Test

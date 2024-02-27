@@ -42,8 +42,8 @@ public class AuthorDoaImpl implements AuthorDoa {
     }
 
     @Override
-    public Author deleteAuthor(Long id) {
-        return null;
+    public void deleteAuthor(Long id) {
+        jdbcTemplate.update("DELETE FROM author WHERE id = ?", id);
     }
 
     private RowMapper<Author> getRowMapper() {

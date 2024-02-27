@@ -191,5 +191,47 @@ void testUpdateAuthor() {
 
 ## 80 - Delete Author
 
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+import chamara.springdatajpasample.sdjpademo.domain.Author;
+
+public interface AuthorDoa {
+    Author getAuthorById(Long id);
+
+    Author findAuthorByFirstName(String firstName);
+
+    Author saveAuthor(Author author);
+
+    Author updateAuthor(Author author);
+
+    void deleteAuthor(Long id);
+}
+```
+
+```java 
+
+@Override
+public void deleteAuthor(Long id) {
+    jdbcTemplate.update("DELETE FROM author WHERE id = ?", id);
+}
+```
+
+```java
+
+@Test
+void testDeleteAuthor() {
+    Author author = new Author();
+    author.setFirstName("john11111111111");
+    author.setLastName("t1111111111111111111");
+
+    Author saved = authorDao.saveAuthor(author);
+
+    authorDao.deleteAuthor(saved.getId());
+    Assertions.assertThrows(DataAccessException.class, () -> authorDao.getAuthorById(saved.getId()));
+}
+
+```
+
 ## 81 - Implement Author with List of Books
 

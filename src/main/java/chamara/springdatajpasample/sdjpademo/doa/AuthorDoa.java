@@ -11,5 +11,5 @@ public interface AuthorDoa {
 
     Author updateAuthor(Author author);
 
-    Author deleteAuthor(Long id);
+    void deleteAuthor(Long id);
 }
