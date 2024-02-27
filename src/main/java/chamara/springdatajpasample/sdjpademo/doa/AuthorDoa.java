@@ -3,13 +3,13 @@ package chamara.springdatajpasample.sdjpademo.doa;
 import chamara.springdatajpasample.sdjpademo.domain.Author;
 
 public interface AuthorDoa {
-    Author getAuthorById(Long id);
+    Author getById(Long id);
 
-    Author findAuthorByFirstName(String firstName);
+    Author findAuthorByName(String firstName, String lastName);
 
-    Author saveAuthor(Author author);
+    Author saveNewAuthor(Author author);
 
     Author updateAuthor(Author author);
 
-    void deleteAuthor(Long id);
+    void deleteAuthorById(Long id);
 }
