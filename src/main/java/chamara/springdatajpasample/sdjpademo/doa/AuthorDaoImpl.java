@@ -62,7 +62,25 @@ public class AuthorDaoImpl implements AuthorDoa {
     }
 
     @Override
+    /*
+     * This method is used to delete an author from the database by their id.
+     * It first retrieves an instance of EntityManager from the EntityManagerFactory.
+     * Then it begins a new transaction.
+     * It finds the author in the database using the provided id and assigns it to a local variable.
+     * The found author is then removed from the database.
+     * The state of the database is then synchronized by flushing the EntityManager.
+     * Finally, the transaction is committed to permanently remove the author from the database.
+     *
+     * @param id The id of the author to be deleted.
+     */
     public void deleteAuthorById(Long id) {
+
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+        Author author = em.find(Author.class, id);
+        em.remove(author);
+        em.flush();
+        em.getTransaction().commit();
 
     }
 
