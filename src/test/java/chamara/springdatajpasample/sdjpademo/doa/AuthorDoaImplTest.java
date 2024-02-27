@@ -179,4 +179,11 @@ class AuthorDoaImplTest {
         assertThat(author).isNotNull();
 
     }
+
+    @Test
+    void testGetAuthorByNameCriteria() {
+        Author author = authorDao.findAuthorByNameCriteria("Craig", "Walls");
+
+        assertThat(author).isNotNull();
+    }
 }
