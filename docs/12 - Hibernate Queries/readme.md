@@ -150,6 +150,134 @@ void testListAuthorByLastNameLike() {
 
 ## 92 - Typed Query
 
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+import chamara.springdatajpasample.sdjpademo.domain.Book;
+
+public interface BookDoa {
+    Book findByIsbn(String isbn);
+
+    Book getById(Long id);
+
+    Book findBookByTitle(String title);
+
+    Book saveNewBook(Book book);
+
+    Book updateBook(Book book);
+
+    void deleteBookById(Long id);
+}
+
+```
+
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+import chamara.springdatajpasample.sdjpademo.domain.Book;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.TypedQuery;
+import org.springframework.stereotype.Component;
+
+@Component
+public class BookDoaImpl implements BookDoa {
+    private final EntityManagerFactory emf;
+
+    public BookDoaImpl(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
+
+    @Override
+    public Book findByIsbn(String isbn) {
+        EntityManager em = getEntityManager();
+        try {
+            TypedQuery<Book> query = em
+                    .createQuery("SELECT b FROM Book b where b.isbn = :isbn", Book.class);
+            query.setParameter("isbn", isbn);
+            return query.getSingleResult();
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public Book getById(Long id) {
+        EntityManager em = getEntityManager();
+        Book book = getEntityManager().find(Book.class, id);
+        em.close();
+        return book;
+    }
+
+    @Override
+    public Book findBookByTitle(String title) {
+        EntityManager em = getEntityManager();
+        TypedQuery<Book> query = em
+                .createQuery("SELECT b FROM Book b where b.title = :title", Book.class);
+        query.setParameter("title", title);
+        Book book = query.getSingleResult();
+        em.close();
+        return book;
+    }
+
+    @Override
+    public Book saveNewBook(Book book) {
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+        em.persist(book);
+        em.flush();
+        em.getTransaction().commit();
+        em.close();
+        return book;
+    }
+
+    @Override
+    public Book updateBook(Book book) {
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+        em.merge(book);
+        em.flush();
+        em.clear();
+        Book savedBook = em.find(Book.class, book.getId());
+        em.getTransaction().commit();
+        em.close();
+        return savedBook;
+    }
+
+    @Override
+    public void deleteBookById(Long id) {
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+        Book book = em.find(Book.class, id);
+        em.remove(book);
+        em.getTransaction().commit();
+        em.close();
+    }
+
+    private EntityManager getEntityManager() {
+        return emf.createEntityManager();
+    }
+}
+```
+
+```java 
+
+@Test
+void testGetBookByIsbn() {
+
+    Book book1 = new Book();
+    book1.setIsbn("9780132350884");
+    book1.setPublisher("Self");
+    book1.setTitle("my book");
+    book1.setAuthorId(1L);
+    bookDao.saveNewBook(book1);
+
+    Book book = bookDao.findByIsbn("9780132350884");
+
+    assertThat(book).isNotNull();
+}
+```
+
 ## 93 - Named Query
 
 ## 94 - Named Query with Parameters

@@ -25,6 +25,21 @@ class AuthorDoaImplTest {
     BookDoa bookDao;
 
     @Test
+    void testGetBookByIsbn() {
+
+        Book book1 = new Book();
+        book1.setIsbn("9780132350884");
+        book1.setPublisher("Self");
+        book1.setTitle("my book");
+        book1.setAuthorId(1L);
+        bookDao.saveNewBook(book1);
+
+        Book book = bookDao.findByIsbn("9780132350884");
+
+        assertThat(book).isNotNull();
+    }
+
+    @Test
     void testListAuthorByLastNameLike() {
         List<Author> authors = authorDao.listAuthorByLastNameLike("Wall");
 

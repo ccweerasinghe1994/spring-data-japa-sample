@@ -3,6 +3,8 @@ package chamara.springdatajpasample.sdjpademo.doa;
 import chamara.springdatajpasample.sdjpademo.domain.Book;
 
 public interface BookDoa {
+    Book findByIsbn(String isbn);
+
     Book getById(Long id);
 
     Book findBookByTitle(String title);

@@ -15,6 +15,19 @@ public class BookDoaImpl implements BookDoa {
     }
 
     @Override
+    public Book findByIsbn(String isbn) {
+        EntityManager em = getEntityManager();
+        try {
+            TypedQuery<Book> query = em
+                    .createQuery("SELECT b FROM Book b where b.isbn = :isbn", Book.class);
+            query.setParameter("isbn", isbn);
+            return query.getSingleResult();
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
     public Book getById(Long id) {
         EntityManager em = getEntityManager();
         Book book = getEntityManager().find(Book.class, id);
