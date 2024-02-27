@@ -21,7 +21,7 @@ public class AuthorDoaImpl implements AuthorDoa {
 
     @Override
     public Author findAuthorByFirstName(String firstName) {
-        return null;
+        return jdbcTemplate.queryForObject("SELECT * FROM author WHERE first_name = ?", getRowMapper(), firstName);
     }
 
     @Override

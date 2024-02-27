@@ -109,6 +109,29 @@ void testGetAuthor() {
 
 ## 77 - Implement Find Author By Name
 
+```java
+
+@Override
+public Author findAuthorByFirstName(String firstName) {
+    return jdbcTemplate.queryForObject("SELECT * FROM author WHERE first_name = ?", getRowMapper(), firstName);
+}
+
+```
+
+let's test the findAuthorByFirstName method.
+
+```java
+
+@Test
+void testGetAuthor() {
+
+    Author author = authorDao.getAuthorById(1L);
+
+    assertThat(author).isNotNull();
+
+}
+```
+
 ## 78 - Save New Author
 
 ## 79 - Update Author
