@@ -134,6 +134,28 @@ void testGetAuthor() {
 
 ## 78 - Save New Author
 
+```java
+
+@Override
+public Author saveAuthor(Author author) {
+    jdbcTemplate.update("INSERT INTO author (first_name, last_name) VALUES (?, ?)", author.getFirstName(), author.getLastName());
+    return jdbcTemplate.queryForObject("SELECT id, first_name, last_name FROM author WHERE first_name = ? AND last_name = ?", getRowMapper(), author.getFirstName(), author.getLastName());
+}
+```
+
+```java
+
+@Test
+void testSaveAuthor() {
+    Author author = new Author();
+    author.setFirstName("Chamara");
+    author.setLastName("Thompson");
+    Author saved = authorDao.saveAuthor(author);
+
+    assertThat(saved).isNotNull();
+}
+```
+
 ## 79 - Update Author
 
 ## 80 - Delete Author
