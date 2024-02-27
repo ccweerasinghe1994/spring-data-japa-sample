@@ -25,6 +25,14 @@ class AuthorDoaImplTest {
     BookDoa bookDao;
 
     @Test
+    void itShouldFindAllAuthors() {
+        List<Author> authors = authorDao.findAllAuthors();
+
+        assertThat(authors).isNotNull();
+        assertThat(authors.size()).isGreaterThan(0);
+    }
+
+    @Test
     void testGetBookByIsbn() {
 
         Book book1 = new Book();

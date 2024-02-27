@@ -5,6 +5,7 @@ import chamara.springdatajpasample.sdjpademo.domain.Author;
 import java.util.List;
 
 public interface AuthorDoa {
+    List<Author> findAllAuthors();
 
     List<Author> listAuthorByLastNameLike(String lastName);
 
