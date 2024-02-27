@@ -16,14 +16,18 @@ public class AuthorRowMapper implements RowMapper<Author> {
         author.setId(resultSet.getLong("id"));
         author.setFirstName(resultSet.getString("first_name"));
         author.setLastName(resultSet.getString("last_name"));
+        try {
+            if (resultSet.getString("isbn") != null) {
+                author.setBooks(new ArrayList<>());
+                author.getBooks().add(mapBooks(resultSet));
+            }
+            while (resultSet.next()) {
+                author.getBooks().add(mapBooks(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-        if (resultSet.getString("isbn") != null) {
-            author.setBooks(new ArrayList<>());
-            author.getBooks().add(mapBooks(resultSet));
-        }
-        while (resultSet.next()) {
-            author.getBooks().add(mapBooks(resultSet));
-        }
 
         return author;
     }
