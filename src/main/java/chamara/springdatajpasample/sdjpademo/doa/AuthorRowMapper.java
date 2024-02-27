@@ -1,12 +1,3 @@
-## 73 - Introduction
-
-![img.png](img.png)
-
-## 74 - Introduction to Spring JDBC Template
-
-let's create a RowMapper for the Author class.
-
-```java
 package chamara.springdatajpasample.sdjpademo.doa;
 
 import chamara.springdatajpasample.sdjpademo.domain.Author;
@@ -25,32 +16,3 @@ public class AuthorRowMapper implements RowMapper<Author> {
         return author;
     }
 }
-```
-
-```java
-package chamara.springdatajpasample.sdjpademo.doa;
-
-
-private RowMapper<Author> getRowMapper() {
-    return new AuthorRowMapper();
-}
-
-;
-}
-
-```
-
-## 75 - Create Row Mapper
-
-## 76 - Implement Get Author By Id
-
-## 77 - Implement Find Author By Name
-
-## 78 - Save New Author
-
-## 79 - Update Author
-
-## 80 - Delete Author
-
-## 81 - Implement Author with List of Books
-

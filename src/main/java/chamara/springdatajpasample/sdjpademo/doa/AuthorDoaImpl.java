@@ -1,6 +1,7 @@
 package chamara.springdatajpasample.sdjpademo.doa;
 
 import chamara.springdatajpasample.sdjpademo.domain.Author;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -180,4 +181,10 @@ public class AuthorDoaImpl implements AuthorDoa {
             }
         }
     }
+
+    private RowMapper<Author> getRowMapper() {
+        return new AuthorRowMapper();
+    }
+
+    ;
 }
