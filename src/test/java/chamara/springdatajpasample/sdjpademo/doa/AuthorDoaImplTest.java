@@ -105,8 +105,8 @@ class AuthorDoaImplTest {
     @Test
     void testUpdateAuthor() {
         Author author = new Author();
-        author.setFirstName("john");
-        author.setLastName("t");
+        author.setFirstName("john1111");
+        author.setLastName("t1111");
 
         Author saved = authorDao.saveAuthor(author);
 

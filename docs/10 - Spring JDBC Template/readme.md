@@ -158,6 +158,37 @@ void testSaveAuthor() {
 
 ## 79 - Update Author
 
+```java
+
+@Override
+public Author updateAuthor(Author author) {
+    jdbcTemplate
+            .update(
+                    "UPDATE author SET first_name = ?, last_name = ? WHERE id = ?",
+                    author.getFirstName(),
+                    author.getLastName(),
+                    author.getId());
+    return jdbcTemplate.queryForObject("SELECT * FROM author WHERE id = ?", getRowMapper(), author.getId());
+}
+```
+
+```java
+
+@Test
+void testUpdateAuthor() {
+    Author author = new Author();
+    author.setFirstName("john1111");
+    author.setLastName("t1111");
+
+    Author saved = authorDao.saveAuthor(author);
+
+    saved.setLastName("Thompson");
+    Author updated = authorDao.updateAuthor(saved);
+
+    assertThat(updated.getLastName()).isEqualTo("Thompson");
+}
+```
+
 ## 80 - Delete Author
 
 ## 81 - Implement Author with List of Books

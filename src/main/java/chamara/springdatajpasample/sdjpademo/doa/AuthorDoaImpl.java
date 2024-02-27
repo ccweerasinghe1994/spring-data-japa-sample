@@ -32,7 +32,13 @@ public class AuthorDoaImpl implements AuthorDoa {
 
     @Override
     public Author updateAuthor(Author author) {
-        return null;
+        jdbcTemplate
+                .update(
+                        "UPDATE author SET first_name = ?, last_name = ? WHERE id = ?",
+                        author.getFirstName(),
+                        author.getLastName(),
+                        author.getId());
+        return jdbcTemplate.queryForObject("SELECT * FROM author WHERE id = ?", getRowMapper(), author.getId());
     }
 
     @Override
