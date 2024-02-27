@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.dao.DataAccessException;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -92,7 +92,7 @@ class AuthorDoaImplTest {
         Author saved = authorDao.saveAuthor(author);
 
         authorDao.deleteAuthor(saved.getId());
-        Assertions.assertThrows(DataAccessException.class, () -> authorDao.getAuthorById(saved.getId()));
+        Assertions.assertThrows(TransientDataAccessResourceException.class, () -> authorDao.getAuthorById(saved.getId()));
     }
 
     @Test
