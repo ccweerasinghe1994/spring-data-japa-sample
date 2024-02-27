@@ -26,7 +26,8 @@ public class AuthorDoaImpl implements AuthorDoa {
 
     @Override
     public Author saveAuthor(Author author) {
-        return null;
+        jdbcTemplate.update("INSERT INTO author (first_name, last_name) VALUES (?, ?)", author.getFirstName(), author.getLastName());
+        return jdbcTemplate.queryForObject("SELECT id, first_name, last_name FROM author WHERE first_name = ? AND last_name = ?", getRowMapper(), author.getFirstName(), author.getLastName());
     }
 
     @Override

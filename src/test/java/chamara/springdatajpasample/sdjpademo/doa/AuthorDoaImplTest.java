@@ -119,7 +119,7 @@ class AuthorDoaImplTest {
     @Test
     void testSaveAuthor() {
         Author author = new Author();
-        author.setFirstName("John");
+        author.setFirstName("Chamara");
         author.setLastName("Thompson");
         Author saved = authorDao.saveAuthor(author);
 
