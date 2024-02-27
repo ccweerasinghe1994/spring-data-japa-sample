@@ -639,12 +639,517 @@ void itShouldDeleteTheAuthor() {
 
 ### 72 - Refactor Author id to Author
 
-###                                          
+let's add `BookDoa` interface and `BookDoaImpl` class.
 
-###                                          
+```java
+package chamara.springdatajpasample.sdjpademo.domain;
 
-###                                          
+import jakarta.persistence.*;
 
-###                                          
+import java.util.Objects;
 
-###                                          
+@Entity
+public class Book {
+    private String isbn;
+    private String title;
+    private String publisher;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Transient
+    private Author authorId;
+
+    public Book() {
+
+    }
+
+    public Book(String isbn, String title, String publisher, Author authorId) {
+        this.isbn = isbn;
+        this.title = title;
+        this.publisher = publisher;
+        this.authorId = authorId;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Author getAuthor() {
+        return authorId;
+    }
+
+    public void setAuthor(Author authorId) {
+        this.authorId = authorId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return Objects.equals(id, book.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+}
+
+```
+
+```java
+package chamara.springdatajpasample.sdjpademo.domain;
+
+import jakarta.persistence.*;
+
+import java.util.Objects;
+
+@Entity
+public class Book {
+    private String isbn;
+    private String title;
+    private String publisher;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Transient
+    private Author authorId;
+
+    public Book() {
+
+    }
+
+    public Book(String isbn, String title, String publisher, Author authorId) {
+        this.isbn = isbn;
+        this.title = title;
+        this.publisher = publisher;
+        this.authorId = authorId;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Author getAuthor() {
+        return authorId;
+    }
+
+    public void setAuthor(Author authorId) {
+        this.authorId = authorId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return Objects.equals(id, book.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+}
+```
+
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+import chamara.springdatajpasample.sdjpademo.domain.Book;
+import org.springframework.stereotype.Component;
+
+import javax.sql.DataSource;
+import java.sql.*;
+
+@Component
+public class BookDaoImpl implements BookDao {
+    private final DataSource source;
+    private final AuthorDoa authorDao;
+
+    public BookDaoImpl(DataSource source, AuthorDoa authorDao) {
+        this.source = source;
+        this.authorDao = authorDao;
+    }
+
+    @Override
+    public Book getById(Long id) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = source.getConnection();
+            ps = connection.prepareStatement("SELECT * FROM book where id = ?");
+            ps.setLong(1, id);
+            resultSet = ps.executeQuery();
+
+            if (resultSet.next()) {
+                return getBookFromRS(resultSet);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                closeAll(resultSet, ps, connection);
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public Book findBookByTitle(String title) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = source.getConnection();
+            ps = connection.prepareStatement("SELECT * FROM book where title = ?");
+            ps.setString(1, title);
+            resultSet = ps.executeQuery();
+
+            if (resultSet.next()) {
+                return getBookFromRS(resultSet);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                closeAll(resultSet, ps, connection);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public Book saveNewBook(Book book) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = source.getConnection();
+            ps = connection.prepareStatement("INSERT INTO book (isbn, publisher, title, author_id) VALUES (?, ?, ?, ?)");
+            ps.setString(1, book.getIsbn());
+            ps.setString(2, book.getPublisher());
+            ps.setString(3, book.getTitle());
+            if (book.getAuthor() != null) {
+                ps.setLong(4, book.getAuthor().getId());
+            }
+            ps.execute();
+
+            Statement statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT LAST_INSERT_ID()");
+
+            if (resultSet.next()) {
+                Long savedId = resultSet.getLong(1);
+                return this.getById(savedId);
+            }
+
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                closeAll(resultSet, ps, connection);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public Book updateBook(Book book) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = source.getConnection();
+            ps = connection.prepareStatement("UPDATE book set isbn = ?, publisher = ?, title = ?, author_id = ? where id = ?");
+            ps.setString(1, book.getIsbn());
+            ps.setString(2, book.getPublisher());
+            ps.setString(3, book.getTitle());
+            if (book.getAuthor() != null) {
+                ps.setLong(4, book.getAuthor().getId());
+            }
+            ps.setLong(5, book.getId());
+            ps.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                closeAll(resultSet, ps, connection);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return getById(book.getId());
+    }
+
+    @Override
+    public void deleteBookById(Long id) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+
+        try {
+            connection = source.getConnection();
+            ps = connection.prepareStatement("DELETE from book where id = ?");
+            ps.setLong(1, id);
+            ps.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            try {
+                closeAll(null, ps, connection);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+    }
+
+    private Book getBookFromRS(ResultSet resultSet) throws SQLException {
+        Book book = new Book();
+        book.setId(resultSet.getLong(1));
+        book.setIsbn(resultSet.getString(2));
+        book.setPublisher(resultSet.getString(3));
+        book.setTitle(resultSet.getString(4));
+        book.setAuthor(authorDao.getAuthorById(resultSet.getLong(5)));
+
+        return book;
+    }
+
+    private void closeAll(ResultSet resultSet, PreparedStatement ps, Connection connection) throws SQLException {
+        if (resultSet != null) {
+            resultSet.close();
+        }
+
+        if (ps != null) {
+            ps.close();
+        }
+
+        if (connection != null) {
+            connection.close();
+        }
+    }
+}
+```
+
+let's test the `BookDaoImpl` class.
+
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+import chamara.springdatajpasample.sdjpademo.domain.Author;
+import chamara.springdatajpasample.sdjpademo.domain.Book;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.ActiveProfiles;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@ActiveProfiles("local")
+@DataJpaTest
+@ComponentScan(basePackages = "chamara.springdatajpasample.sdjpademo.doa")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+class AuthorDoaImplTest {
+    @Autowired
+    AuthorDoa authorDao;
+
+    @Autowired
+    BookDao bookDao;
+
+    @Test
+    void testDeleteBook() {
+        Book book = new Book();
+        book.setIsbn("1234");
+        book.setPublisher("Self");
+        book.setTitle("my book");
+        Author author = new Author();
+        author.setId(3L);
+        book.setAuthor(author);
+        Book saved = bookDao.saveNewBook(book);
+
+        bookDao.deleteBookById(saved.getId());
+
+        Book deleted = bookDao.getById(saved.getId());
+
+        assertThat(deleted).isNull();
+    }
+
+    @Test
+    void updateBookTest() {
+        Book book = new Book();
+        book.setIsbn("1234");
+        book.setPublisher("Self");
+        book.setTitle("my book");
+        Author author = new Author();
+        author.setId(3L);
+        book.setAuthor(author);
+        Book saved = bookDao.saveNewBook(book);
+
+        saved.setTitle("New Book");
+        bookDao.updateBook(saved);
+
+        Book fetched = bookDao.getById(saved.getId());
+
+        assertThat(fetched.getTitle()).isEqualTo("New Book");
+    }
+
+    @Test
+    void testSaveBook() {
+        Book book = new Book();
+        book.setIsbn("1234");
+        book.setPublisher("Self");
+        book.setTitle("my book");
+        Author author = new Author();
+        author.setId(3L);
+        book.setAuthor(author);
+        Book saved = bookDao.saveNewBook(book);
+
+        assertThat(saved).isNotNull();
+    }
+
+    @Test
+    void testGetBookByName() {
+        Book book = bookDao.findBookByTitle("Clean Code");
+
+        assertThat(book).isNotNull();
+    }
+
+    @Test
+    void testGetBook() {
+        Book book = bookDao.getById(3L);
+
+        assertThat(book.getId()).isNotNull();
+    }
+
+    @Test
+    void testDeleteAuthor() {
+        Author author = new Author();
+        author.setFirstName("john");
+        author.setLastName("t");
+
+        Author saved = authorDao.saveAuthor(author);
+
+        authorDao.deleteAuthor(saved.getId());
+
+        Author deleted = authorDao.getAuthorById(saved.getId());
+
+        assertThat(deleted).isNull();
+    }
+
+    @Test
+    void testUpdateAuthor() {
+        Author author = new Author();
+        author.setFirstName("john");
+        author.setLastName("t");
+
+        Author saved = authorDao.saveAuthor(author);
+
+        saved.setLastName("Thompson");
+        Author updated = authorDao.updateAuthor(saved);
+
+        assertThat(updated.getLastName()).isEqualTo("Thompson");
+    }
+
+    @Test
+    void testSaveAuthor() {
+        Author author = new Author();
+        author.setFirstName("John");
+        author.setLastName("Thompson");
+        Author saved = authorDao.saveAuthor(author);
+
+        assertThat(saved).isNotNull();
+    }
+
+    @Test
+    void testGetAuthorByName() {
+        Author author = authorDao.findAuthorByFirstName("Craig");
+
+        assertThat(author).isNotNull();
+    }
+
+    @Test
+    void testGetAuthor() {
+
+        Author author = authorDao.getAuthorById(1L);
+
+        assertThat(author).isNotNull();
+
+    }
+}
+```
+                              

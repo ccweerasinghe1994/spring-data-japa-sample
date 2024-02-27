@@ -1,6 +1,7 @@
 package chamara.springdatajpasample.sdjpademo.doa;
 
 import chamara.springdatajpasample.sdjpademo.domain.Author;
+import chamara.springdatajpasample.sdjpademo.domain.Book;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -16,55 +17,128 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class AuthorDoaImplTest {
     @Autowired
-    AuthorDoa authorDoa;
+    AuthorDoa authorDao;
+
+    @Autowired
+    BookDao bookDao;
 
     @Test
-    void itShouldReturnAuthorWhenIdIsProvided() {
-        Author author = authorDoa.getAuthorById(1L);
+    void testDeleteBook() {
+        Book book = new Book();
+        book.setIsbn("1234");
+        book.setPublisher("Self");
+        book.setTitle("my book");
+        Author author = new Author();
+        author.setId(3L);
+        book.setAuthor(author);
+        Book saved = bookDao.saveNewBook(book);
+
+        bookDao.deleteBookById(saved.getId());
+
+        Book deleted = bookDao.getById(saved.getId());
+
+        assertThat(deleted).isNull();
+    }
+
+    @Test
+    void updateBookTest() {
+        Book book = new Book();
+        book.setIsbn("1234");
+        book.setPublisher("Self");
+        book.setTitle("my book");
+        Author author = new Author();
+        author.setId(3L);
+        book.setAuthor(author);
+        Book saved = bookDao.saveNewBook(book);
+
+        saved.setTitle("New Book");
+        bookDao.updateBook(saved);
+
+        Book fetched = bookDao.getById(saved.getId());
+
+        assertThat(fetched.getTitle()).isEqualTo("New Book");
+    }
+
+    @Test
+    void testSaveBook() {
+        Book book = new Book();
+        book.setIsbn("1234");
+        book.setPublisher("Self");
+        book.setTitle("my book");
+        Author author = new Author();
+        author.setId(3L);
+        book.setAuthor(author);
+        Book saved = bookDao.saveNewBook(book);
+
+        assertThat(saved).isNotNull();
+    }
+
+    @Test
+    void testGetBookByName() {
+        Book book = bookDao.findBookByTitle("Clean Code");
+
+        assertThat(book).isNotNull();
+    }
+
+    @Test
+    void testGetBook() {
+        Book book = bookDao.getById(3L);
+
+        assertThat(book.getId()).isNotNull();
+    }
+
+    @Test
+    void testDeleteAuthor() {
+        Author author = new Author();
+        author.setFirstName("john");
+        author.setLastName("t");
+
+        Author saved = authorDao.saveAuthor(author);
+
+        authorDao.deleteAuthor(saved.getId());
+
+        Author deleted = authorDao.getAuthorById(saved.getId());
+
+        assertThat(deleted).isNull();
+    }
+
+    @Test
+    void testUpdateAuthor() {
+        Author author = new Author();
+        author.setFirstName("john");
+        author.setLastName("t");
+
+        Author saved = authorDao.saveAuthor(author);
+
+        saved.setLastName("Thompson");
+        Author updated = authorDao.updateAuthor(saved);
+
+        assertThat(updated.getLastName()).isEqualTo("Thompson");
+    }
+
+    @Test
+    void testSaveAuthor() {
+        Author author = new Author();
+        author.setFirstName("John");
+        author.setLastName("Thompson");
+        Author saved = authorDao.saveAuthor(author);
+
+        assertThat(saved).isNotNull();
+    }
+
+    @Test
+    void testGetAuthorByName() {
+        Author author = authorDao.findAuthorByFirstName("Craig");
+
         assertThat(author).isNotNull();
     }
 
     @Test
-    void itShouldReturnAuthorWhenFirstNameIsProvided() {
-        Author author = authorDoa.findAuthorByFirstName("Craig");
+    void testGetAuthor() {
+
+        Author author = authorDao.getAuthorById(1L);
+
         assertThat(author).isNotNull();
-    }
 
-    @Test
-    void itShouldSaveAuthor() {
-        Author author = new Author();
-        author.setFirstName("John");
-        author.setLastName("Doe");
-        Author savedAuthor = authorDoa.saveAuthor(author);
-        assertThat(savedAuthor).isNotNull();
-    }
-
-    @Test
-    void itShouldUpdateAuthor() {
-        // given
-        Author author = new Author();
-        author.setFirstName("John");
-        author.setLastName("Doe");
-        Author savedAuthor = authorDoa.saveAuthor(author);
-        savedAuthor.setLastName("Updated");
-
-        // when
-        Author updateAuthor = authorDoa.updateAuthor(savedAuthor);
-        // then
-        assertThat(savedAuthor.getLastName()).isEqualTo(updateAuthor.getLastName());
-    }
-
-    @Test
-    void itShouldDeleteTheAuthor() {
-        // given
-        Author author = new Author();
-        author.setFirstName("John");
-        author.setLastName("Doe");
-        Author savedAuthor = authorDoa.saveAuthor(author);
-        Long id = savedAuthor.getId();
-        // when
-        Author deletedAuthorId = authorDoa.deleteAuthor(id);
-        // then
-        assertThat(savedAuthor.getId()).isEqualTo(deletedAuthorId.getId());
     }
 }

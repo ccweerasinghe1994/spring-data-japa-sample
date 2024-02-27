@@ -12,18 +12,20 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
-    private Long authorId;
+    @Transient
+    private Author authorId;
 
     public Book() {
 
     }
-    public Book(String isbn, String title, String publisher, Long authorId) {
+
+    public Book(String isbn, String title, String publisher, Author authorId) {
         this.isbn = isbn;
         this.title = title;
         this.publisher = publisher;
         this.authorId = authorId;
     }
+
     public String getIsbn() {
         return isbn;
     }
@@ -48,20 +50,22 @@ public class Book {
         this.publisher = publisher;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getId() {
-        return id;
-    }
-    public Long getAuthorId() {
+    public Author getAuthor() {
         return authorId;
     }
 
-    public void setAuthorId(Long authorId) {
+    public void setAuthor(Author authorId) {
         this.authorId = authorId;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
