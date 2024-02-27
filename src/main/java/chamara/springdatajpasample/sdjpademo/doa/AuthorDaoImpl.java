@@ -40,8 +40,25 @@ public class AuthorDaoImpl implements AuthorDoa {
     }
 
     @Override
+    /*
+     * This method is used to update an existing author in the database.
+     * It first retrieves an instance of EntityManager from the EntityManagerFactory.
+     * Then it joins the current transaction, if there is one active.
+     * The provided author object is merged with the current persistence context.
+     * The state of the provided author object is synchronized with the database.
+     * The persistence context is then cleared to remove any entities that it might be managing.
+     * Finally, it finds and returns the updated author from the database using the author's id.
+     *
+     * @param author The author object to be updated. This should be a managed entity, i.e., one retrieved from the database.
+     * @return The updated author object from the database.
+     */
     public Author updateAuthor(Author author) {
-        return null;
+        EntityManager em = getEntityManager();
+        em.joinTransaction();
+        em.merge(author);
+        em.flush();
+        em.clear();
+        return em.find(Author.class, author.getId());
     }
 
     @Override
