@@ -1,6 +1,10 @@
 ## 97 - Introduction
 
+![img.png](img.png)
+
 ## 98 - Spring Data JPA Query Methods
+
+https://docs.spring.io/spring-data/jpa/reference/jpa.html
 
 ## 99 - Project Code Review
 
