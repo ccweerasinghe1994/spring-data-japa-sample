@@ -3,8 +3,11 @@ package chamara.springdatajpasample.sdjpademo.doa;
 import chamara.springdatajpasample.sdjpademo.domain.Author;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class AuthorDaoImpl implements AuthorDoa {
@@ -12,6 +15,19 @@ public class AuthorDaoImpl implements AuthorDoa {
 
     public AuthorDaoImpl(EntityManagerFactory emf) {
         this.emf = emf;
+    }
+
+    @Override
+    public List<Author> listAuthorByLastNameLike(String lastName) {
+        EntityManager em = getEntityManager();
+        try {
+            Query query = em.createQuery("SELECT a FROM Author a WHERE a.lastName LIKE :lastName", Author.class);
+            query.setParameter("lastName", lastName + "%");
+            List<Author> authors = query.getResultList();
+            return authors;
+        } finally {
+            em.close();
+        }
     }
 
     @Override
