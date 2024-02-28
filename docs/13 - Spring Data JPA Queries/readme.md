@@ -810,7 +810,144 @@ void testBookNativeQuery() {
 
 ## 109 - JPA Named Queries
 
-              
+```java
+package chamara.springdatajpasample.sdjpademo.domain;
 
+import jakarta.persistence.*;
 
+import java.util.Objects;
+
+@NamedQuery(name = "Book.jpaNamed", query = "SELECT b FROM Book b WHERE b.title = :title")
+@Entity
+public class Book {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String title;
+    private String isbn;
+    private String publisher;
+    private Long authorId;
+
+    public Book() {
+
+    }
+
+    public Book(String title, String isbn, String publisher) {
+        this.title = title;
+        this.isbn = isbn;
+        this.publisher = publisher;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Book book = (Book) o;
+
+        return Objects.equals(id, book.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public Long getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
+    }
+}
+
+```
+
+```java
+package chamara.springdatajpasample.sdjpademo.repositories;
+
+import chamara.springdatajpasample.sdjpademo.domain.Book;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.lang.Nullable;
+import org.springframework.scheduling.annotation.Async;
+
+import java.util.Optional;
+import java.util.concurrent.Future;
+import java.util.stream.Stream;
+
+public interface BookRepository extends JpaRepository<Book, Long> {
+
+    Book jpaNamed(@Param("title") String title);
+
+    @Query(value = "SELECT * FROM book b WHERE b.title = :title", nativeQuery = true)
+    Book findBookByTitleNativeQuery(@Param("title") String title);
+
+    @Query("SELECT b FROM Book b WHERE b.title = :title")
+    Book findBookByTitleWithQueryName(@Param("title") String title);
+
+    @Query("SELECT b FROM Book b WHERE b.title = ?1")
+    Book findBookByTitleWithQuery(String title);
+
+    Optional<Book> findBookByTitle(String title);
+
+    Book readByTitle(String title);
+
+    @Nullable
+    Book getByTitle(@Nullable String title);
+
+    Stream<Book> findAllByTitleNotNull();
+
+    @Async
+    Future<Book> queryByTitle(String title);
+}
+
+```
+
+```java
+
+@Test
+void testJpaNamed() {
+    // given
+    Book book = bookRepository.jpaNamed("Clean Code");
+    // when
+    // then
+    assertThat(book.getTitle()).isEqualTo("Clean Code");
+}
+```
    

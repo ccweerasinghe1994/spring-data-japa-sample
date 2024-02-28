@@ -26,6 +26,14 @@ class BookDoaImplTest {
     @Autowired
     BookRepository bookRepository;
 
+    @Test
+    void testJpaNamed() {
+        // given
+        Book book = bookRepository.jpaNamed("Clean Code");
+        // when
+        // then
+        assertThat(book.getTitle()).isEqualTo("Clean Code");
+    }
 
     @Test
     void testBookNativeQuery() {
