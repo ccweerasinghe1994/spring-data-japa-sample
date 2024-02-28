@@ -574,6 +574,45 @@ class BookDoaImplTest {
 
 ## 104 - Stream Query Results
 
+```java
+package chamara.springdatajpasample.sdjpademo.repositories;
+
+import chamara.springdatajpasample.sdjpademo.domain.Book;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.lang.Nullable;
+
+import java.util.Optional;
+import java.util.stream.Stream;
+
+public interface BookRepository extends JpaRepository<Book, Long> {
+    Optional<Book> findBookByTitle(String title);
+
+    Book readByTitle(String title);
+
+    @Nullable
+    Book getByTitle(@Nullable String title);
+
+    Stream<Book> findAllByTitleNotNull();
+}
+
+```
+
+```java
+
+@Test
+void testBookStream() {
+    // given
+    AtomicInteger count = new AtomicInteger();
+    bookRepository.findAllByTitleNotNull().forEach(book -> {
+        count.incrementAndGet();
+    });
+    // when
+    // then
+    assertThat(count.get()).isGreaterThan(2);
+}
+
+```
+
 ## 105 - Asynchronous Query Results
 
 ## 106 - Declaring Queries Using Query
