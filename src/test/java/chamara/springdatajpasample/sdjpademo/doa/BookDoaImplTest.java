@@ -26,6 +26,16 @@ class BookDoaImplTest {
     @Autowired
     BookRepository bookRepository;
 
+
+    @Test
+    void testBookNativeQuery() {
+        // given
+        Book book = bookRepository.findBookByTitleNativeQuery("Clean Code");
+        // when
+        // then
+        assertThat(book.getTitle()).isEqualTo("Clean Code");
+    }
+
     @Test
     void testBookQueryName() {
         // given

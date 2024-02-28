@@ -757,6 +757,57 @@ void testBookQueryName() {
 
 ## 108 - Native SQL Queries
 
+```java
+package chamara.springdatajpasample.sdjpademo.repositories;
+
+import chamara.springdatajpasample.sdjpademo.domain.Book;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.lang.Nullable;
+import org.springframework.scheduling.annotation.Async;
+
+import java.util.Optional;
+import java.util.concurrent.Future;
+import java.util.stream.Stream;
+
+public interface BookRepository extends JpaRepository<Book, Long> {
+    @Query(value = "SELECT * FROM book b WHERE b.title = :title", nativeQuery = true)
+    Book findBookByTitleNativeQuery(@Param("title") String title);
+
+    @Query("SELECT b FROM Book b WHERE b.title = :title")
+    Book findBookByTitleWithQueryName(@Param("title") String title);
+
+    @Query("SELECT b FROM Book b WHERE b.title = ?1")
+    Book findBookByTitleWithQuery(String title);
+
+    Optional<Book> findBookByTitle(String title);
+
+    Book readByTitle(String title);
+
+    @Nullable
+    Book getByTitle(@Nullable String title);
+
+    Stream<Book> findAllByTitleNotNull();
+
+    @Async
+    Future<Book> queryByTitle(String title);
+}
+
+```
+
+```java
+
+@Test
+void testBookNativeQuery() {
+    // given
+    Book book = bookRepository.findBookByTitleNativeQuery("Clean Code");
+    // when
+    // then
+    assertThat(book.getTitle()).isEqualTo("Clean Code");
+}
+```
+
 ## 109 - JPA Named Queries
 
               
