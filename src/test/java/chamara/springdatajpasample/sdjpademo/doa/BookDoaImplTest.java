@@ -27,6 +27,15 @@ class BookDoaImplTest {
     BookRepository bookRepository;
 
     @Test
+    void testBookQueryName() {
+        // given
+        Book book = bookRepository.findBookByTitleWithQueryName("Clean Code");
+        // when
+        // then
+        assertThat(book.getTitle()).isEqualTo("Clean Code");
+    }
+
+    @Test
     void testBookQuery() {
         // given
         Book book = bookRepository.findBookByTitleWithQuery("Clean Code");
