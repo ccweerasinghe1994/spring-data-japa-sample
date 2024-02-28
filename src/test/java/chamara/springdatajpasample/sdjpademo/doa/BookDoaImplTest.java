@@ -27,6 +27,15 @@ class BookDoaImplTest {
     BookRepository bookRepository;
 
     @Test
+    void testBookQuery() {
+        // given
+        Book book = bookRepository.findBookByTitleWithQuery("Clean Code");
+        // when
+        // then
+        assertThat(book.getTitle()).isEqualTo("Clean Code");
+    }
+
+    @Test
     void testBookAsync() throws ExecutionException, InterruptedException {
         // given
         Future<Book> bookFuture = bookRepository.queryByTitle("Clean Code");
