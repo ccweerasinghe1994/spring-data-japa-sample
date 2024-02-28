@@ -428,6 +428,81 @@ class AuthorDoaImplTest {
 
 ## 102 - Optional Return Type
 
+```java
+package chamara.springdatajpasample.sdjpademo.repositories;
+
+import chamara.springdatajpasample.sdjpademo.domain.Author;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface AuthorRepository extends JpaRepository<Author, Long> {
+    Optional<Author> findAuthorByFirstNameAndLastName(String firstName, String lastName);
+}
+
+```
+
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+import chamara.springdatajpasample.sdjpademo.domain.Author;
+import chamara.springdatajpasample.sdjpademo.repositories.AuthorRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Component;
+
+@Component
+public class AuthorDaoImpl implements AuthorDoa {
+
+    private final AuthorRepository authorRepository;
+
+    public AuthorDaoImpl(AuthorRepository authorRepository) {
+        this.authorRepository = authorRepository;
+    }
+
+    @Override
+    public Author getById(Long id) {
+        return authorRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Author findAuthorByName(String firstName, String lastName) {
+        return authorRepository.findAuthorByFirstNameAndLastName(firstName, lastName).orElseThrow(EntityNotFoundException::new);
+    }
+
+    @Override
+    public Author saveNewAuthor(Author author) {
+        return authorRepository.save(author);
+    }
+
+    @Transactional
+    @Override
+    public Author updateAuthor(Author author) {
+        Author existing = authorRepository.findById(author.getId()).orElse(null);
+        if (existing != null) {
+            existing.setFirstName(author.getFirstName());
+            existing.setLastName(author.getLastName());
+            return authorRepository.save(existing);
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteAuthorById(Long id) {
+        authorRepository.deleteById(id);
+    }
+}
+```
+
+```java
+
+@Test
+void testGetAuthorByNameNotFound() {
+    assertThrows(EntityNotFoundException.class, () -> authorDao.findAuthorByName("Foo", "Bar"));
+}
+
+```
+
 ## 103 - Null Handling
 
 ## 104 - Stream Query Results

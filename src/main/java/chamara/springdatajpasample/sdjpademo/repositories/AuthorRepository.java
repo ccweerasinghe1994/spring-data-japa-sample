@@ -3,6 +3,8 @@ package chamara.springdatajpasample.sdjpademo.repositories;
 import chamara.springdatajpasample.sdjpademo.domain.Author;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface AuthorRepository extends JpaRepository<Author, Long> {
-    Author findAuthorByFirstNameAndLastName(String firstName, String lastName);
+    Optional<Author> findAuthorByFirstNameAndLastName(String firstName, String lastName);
 }
