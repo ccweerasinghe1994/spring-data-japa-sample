@@ -1,5 +1,6 @@
 package chamara.springdatajpasample.sdjpademo.doa;
 
+import chamara.springdatajpasample.sdjpademo.domain.Book;
 import chamara.springdatajpasample.sdjpademo.repositories.BookRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -22,6 +25,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class BookDoaImplTest {
     @Autowired
     BookRepository bookRepository;
+
+    @Test
+    void testBookAsync() throws ExecutionException, InterruptedException {
+        // given
+        Future<Book> bookFuture = bookRepository.queryByTitle("Clean Code");
+        Book book = bookFuture.get();
+        // when
+        // then
+        assertThat(book.getTitle()).isEqualTo("Clean Code");
+    }
 
     @Test
     void testBookStream() {
