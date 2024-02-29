@@ -503,4 +503,4 @@ void findAllBooksPageableSorted() {
 
 ## 122 - Query Paging and Sorting with Spring Data JPA
 
-              
+               
