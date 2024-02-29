@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -23,6 +26,13 @@ class AuthorDoaImplTest {
     @Autowired
     BookDoa bookDao;
 
+    @Test
+    void findAllAuthorsByLastName() {
+        List<Author> authors = authorDao.findAllAuthorsByLastName("Walls", PageRequest.of(0, 2));
+
+        assertThat(authors).isNotNull();
+        assertThat(authors.size()).isEqualTo(1);
+    }
 //    @Autowired
 //    BookDao bookDao;
 //

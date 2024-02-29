@@ -1002,6 +1002,88 @@ class BookDoaImplTest {
 
 ## 121 - Sorting with Spring Data JPA
 
+```java
+
+@Override
+public List<Book> findAllBooksSortByTitle(Pageable pageable) {
+    Page<Book> books = bookRepository.findAll(pageable);
+    return books.getContent();
+}
+
+```
+
+```java
+
+@Test
+void findAllBooksPage1_SortByTitle() {
+    List<Book> books = bookDao.findAllBooksSortByTitle(PageRequest.of(0, 2,
+            Sort.by(Sort.Order.desc("title"))));
+
+    assertThat(books).isNotNull();
+    assertThat(books.size()).isEqualTo(2);
+}
+```
+
 ## 122 - Query Paging and Sorting with Spring Data JPA
 
-               
+```java
+package chamara.springdatajpasample.sdjpademo.doa;
+
+import chamara.springdatajpasample.sdjpademo.domain.Author;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+
+public interface AuthorDoa {
+    List<Author> findAllAuthorsByLastName(String lastName, Pageable pageable);
+
+    Author getById(Long id);
+
+    Author findAuthorByName(String firstName, String lastName);
+
+    Author saveNewAuthor(Author author);
+
+    Author updateAuthor(Author author);
+
+    void deleteAuthorById(Long id);
+}
+
+```    
+
+```java
+
+@Override
+public List<Author> findAllAuthorsByLastName(String lastName, Pageable pageable) {
+    return authorRepository.findAuthorByLastName(lastName, pageable).getContent();
+}
+
+```
+
+```java
+package chamara.springdatajpasample.sdjpademo.repositories;
+
+import chamara.springdatajpasample.sdjpademo.domain.Author;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface AuthorRepository extends JpaRepository<Author, Long> {
+    Optional<Author> findAuthorByFirstNameAndLastName(String firstName, String lastName);
+
+    Page<Author> findAuthorByLastName(String lastName, Pageable pageable);
+}
+
+```
+
+```java
+
+@Test
+void findAllAuthorsByLastName() {
+    List<Author> authors = authorDao.findAllAuthorsByLastName("Walls", PageRequest.of(0, 2));
+
+    assertThat(authors).isNotNull();
+    assertThat(authors.size()).isEqualTo(1);
+}
+```

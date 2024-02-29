@@ -4,6 +4,7 @@ import chamara.springdatajpasample.sdjpademo.domain.Book;
 import chamara.springdatajpasample.sdjpademo.repositories.BookRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,8 @@ public class BookDoaImpl implements BookDoa {
 
     @Override
     public List<Book> findAllBooksSortByTitle(Pageable pageable) {
-        return null;
+        Page<Book> books = bookRepository.findAll(pageable);
+        return books.getContent();
     }
 
     @Override
