@@ -1,9 +1,6 @@
 package chamara.springdatajpasample.sdjpademo.doa;
 
-import chamara.springdatajpasample.sdjpademo.domain.Author;
 import chamara.springdatajpasample.sdjpademo.domain.Book;
-import jakarta.persistence.EntityManagerFactory;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -11,11 +8,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles("local")
 @DataJpaTest
@@ -23,25 +22,19 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class BookDoaImplTest {
     @Autowired
-    EntityManagerFactory emf;
-
     BookDoa bookDao;
 
-    @BeforeEach
-    void setUp() {
-        bookDao = new BookDaoHibernate(emf);
-    }
-
     @Test
-    void findAllBooksSortByTitle() {
-        List<Book> books = bookDao.findAllBooksSortByTitle(PageRequest.of(0, 2, Sort.by(Sort.Order.desc("title"))));
+    void findAllBooksPage1_SortByTitle() {
+        List<Book> books = bookDao.findAllBooksSortByTitle(PageRequest.of(0, 2,
+                Sort.by(Sort.Order.desc("title"))));
 
         assertThat(books).isNotNull();
         assertThat(books.size()).isEqualTo(2);
     }
 
     @Test
-    void findAllBooks() {
+    void findAllBooksPage1_pageable() {
         List<Book> books = bookDao.findAllBooks(PageRequest.of(0, 2));
 
         assertThat(books).isNotNull();
@@ -49,7 +42,51 @@ class BookDoaImplTest {
     }
 
     @Test
+    void findAllBooksPage2_pageable() {
+        List<Book> books = bookDao.findAllBooks(PageRequest.of(1, 2));
+
+        assertThat(books).isNotNull();
+        assertThat(books.size()).isEqualTo(2);
+    }
+
+    @Test
+    void findAllBooksPage10_pageable() {
+        List<Book> books = bookDao.findAllBooks(PageRequest.of(10, 10));
+
+        assertThat(books).isNotNull();
+        assertThat(books.size()).isEqualTo(0);
+    }
+
+    @Test
+    void findAllBooksPage1() {
+        List<Book> books = bookDao.findAllBooks(2, 0);
+
+        assertThat(books).isNotNull();
+        assertThat(books.size()).isEqualTo(2);
+    }
+
+    @Test
+    void findAllBooksPage2() {
+        List<Book> books = bookDao.findAllBooks(2, 2);
+
+        assertThat(books).isNotNull();
+        assertThat(books.size()).isEqualTo(2);
+    }
+
+    @Test
+    void findAllBooksPage10() {
+        List<Book> books = bookDao.findAllBooks(10, 100);
+
+        assertThat(books).isNotNull();
+        assertThat(books.size()).isEqualTo(0);
+    }
+
+    @Test
     void testFindAllBooks() {
+        List<Book> books = bookDao.findAllBooks();
+
+        assertThat(books).isNotNull();
+        assertThat(books.size()).isGreaterThan(5);
     }
 
     @Test
@@ -72,11 +109,8 @@ class BookDoaImplTest {
         book.setIsbn("1234");
         book.setPublisher("Self");
         book.setTitle("my book");
-
-        Author author = new Author();
-        author.setId(3L);
-
         book.setAuthorId(1L);
+
         Book saved = bookDao.saveNewBook(book);
 
         assertThat(saved).isNotNull();
@@ -88,10 +122,6 @@ class BookDoaImplTest {
         book.setIsbn("1234");
         book.setPublisher("Self");
         book.setTitle("my book");
-
-        Author author = new Author();
-        author.setId(3L);
-
         book.setAuthorId(1L);
         Book saved = bookDao.saveNewBook(book);
 
@@ -105,6 +135,7 @@ class BookDoaImplTest {
 
     @Test
     void deleteBookById() {
+
         Book book = new Book();
         book.setIsbn("1234");
         book.setPublisher("Self");
@@ -113,8 +144,8 @@ class BookDoaImplTest {
 
         bookDao.deleteBookById(saved.getId());
 
-        Book deleted = bookDao.getById(saved.getId());
-
-        assertThat(deleted).isNull();
+        assertThrows(JpaObjectRetrievalFailureException.class, () -> {
+            bookDao.getById(saved.getId());
+        });
     }
 }
