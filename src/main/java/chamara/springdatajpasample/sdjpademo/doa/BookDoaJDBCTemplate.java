@@ -12,11 +12,10 @@ public class BookDoaJDBCTemplate implements BookDoa {
     public BookDoaJDBCTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-
+    
     @Override
-    public List<Book> findAllBooksByTitleSorted(Pageable pageable) {
-        String sql = "SELECT * FROM book ORDER BY title " + pageable.getSort().getOrderFor("title").getDirection().name() + " LIMIT ? OFFSET ?";
-        return jdbcTemplate.query(sql, getBookMapper(), pageable.getPageSize(), pageable.getOffset());
+    public List<Book> findAllBooksSortByTitle(Pageable pageable) {
+        return null;
     }
 
     @Override

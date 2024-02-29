@@ -17,8 +17,9 @@ public class BookDoaImpl implements BookDoa {
         this.bookRepository = bookRepository;
     }
 
+
     @Override
-    public List<Book> findAllBooksByTitleSorted(Pageable pageable) {
+    public List<Book> findAllBooksSortByTitle(Pageable pageable) {
         return null;
     }
 

@@ -38,10 +38,10 @@ class BookDoaImplTest {
 
     @Test
     void findAllBooks() {
-        List<Book> books = bookDao.findAllBooks(PageRequest.of(0, 10));
+        List<Book> books = bookDao.findAllBooks(PageRequest.of(0, 2));
 
         assertThat(books).isNotNull();
-        assertThat(books.size()).isEqualTo(10);
+        assertThat(books.size()).isEqualTo(2);
     }
 
     @Test
