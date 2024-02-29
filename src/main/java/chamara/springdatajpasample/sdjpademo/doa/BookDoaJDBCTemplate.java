@@ -13,6 +13,11 @@ public class BookDoaJDBCTemplate implements BookDoa {
     }
 
     @Override
+    public List<Book> findAllBooks(int pageSize, int offset) {
+        return jdbcTemplate.query("SELECT * FROM book LIMIT ? OFFSET ?", getBookMapper(), pageSize, offset);
+    }
+
+    @Override
     public List<Book> findAllBooks() {
         return jdbcTemplate.query("SELECT * FROM book", getBookMapper());
     }

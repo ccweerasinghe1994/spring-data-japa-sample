@@ -17,6 +17,11 @@ public class BookDoaImpl implements BookDoa {
     }
 
     @Override
+    public List<Book> findAllBooks(int pageSize, int offset) {
+        return null;
+    }
+
+    @Override
     public List<Book> findAllBooks() {
         return null;
     }

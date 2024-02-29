@@ -5,6 +5,8 @@ import chamara.springdatajpasample.sdjpademo.domain.Book;
 import java.util.List;
 
 public interface BookDoa {
+    List<Book> findAllBooks(int pageSize, int offset);
+
     List<Book> findAllBooks();
 
     Book getById(Long id);

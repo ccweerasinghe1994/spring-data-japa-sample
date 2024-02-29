@@ -31,6 +31,38 @@ class BookDoaImplTest {
         bookDao = new BookDoaJDBCTemplate(jdbcTemplate);
     }
 
+
+    @Test
+    void findAllBooksInPage1() {
+        // given
+        List<Book> books = bookDao.findAllBooks(2, 0);
+        // when
+        // then
+        assertThat(books).isNotNull();
+        assertThat(books.size()).isEqualTo(2);
+    }
+
+    @Test
+    void findAllBooksInPage2() {
+        // given
+        List<Book> books = bookDao.findAllBooks(2, 2);
+        // when
+        // then
+        assertThat(books).isNotNull();
+        assertThat(books.size()).isEqualTo(2);
+    }
+
+    @Test
+    void findAllBooksInPage100() {
+        // given
+        List<Book> books = bookDao.findAllBooks(2, 200);
+        // when
+        // then
+        assertThat(books).isNotNull();
+        assertThat(books.size()).isEqualTo(0);
+    }
+
+
     @Test
     void testFindAllBooks() {
         List<Book> books = bookDao.findAllBooks();
