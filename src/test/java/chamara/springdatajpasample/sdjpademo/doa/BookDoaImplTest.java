@@ -1,21 +1,19 @@
 package chamara.springdatajpasample.sdjpademo.doa;
 
 import chamara.springdatajpasample.sdjpademo.domain.Book;
-import chamara.springdatajpasample.sdjpademo.repositories.BookRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles("local")
@@ -24,80 +22,80 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class BookDoaImplTest {
     @Autowired
-    BookRepository bookRepository;
+    JdbcTemplate jdbcTemplate;
 
-    @Test
-    void testJpaNamed() {
-        // given
-        Book book = bookRepository.jpaNamed("Clean Code");
-        // when
-        // then
-        assertThat(book.getTitle()).isEqualTo("Clean Code");
+    BookDoa bookDao;
+
+    @BeforeEach
+    void setUp() {
+        bookDao = new BookDoaJDBCTemplate(jdbcTemplate);
     }
 
     @Test
-    void testBookNativeQuery() {
-        // given
-        Book book = bookRepository.findBookByTitleNativeQuery("Clean Code");
-        // when
-        // then
-        assertThat(book.getTitle()).isEqualTo("Clean Code");
+    void testFindAllBooks() {
+        List<Book> books = bookDao.findAllBooks();
+
+        assertThat(books).isNotNull();
+        assertThat(books.size()).isGreaterThan(5);
     }
 
     @Test
-    void testBookQueryName() {
-        // given
-        Book book = bookRepository.findBookByTitleWithQueryName("Clean Code");
-        // when
-        // then
-        assertThat(book.getTitle()).isEqualTo("Clean Code");
+    void getById() {
+        Book book = bookDao.getById(3L);
+
+        assertThat(book.getId()).isNotNull();
     }
 
     @Test
-    void testBookQuery() {
-        // given
-        Book book = bookRepository.findBookByTitleWithQuery("Clean Code");
-        // when
-        // then
-        assertThat(book.getTitle()).isEqualTo("Clean Code");
+    void findBookByTitle() {
+        Book book = bookDao.findBookByTitle("Clean Code");
+
+        assertThat(book).isNotNull();
     }
 
     @Test
-    void testBookAsync() throws ExecutionException, InterruptedException {
-        // given
-        Future<Book> bookFuture = bookRepository.queryByTitle("Clean Code");
-        Book book = bookFuture.get();
-        // when
-        // then
-        assertThat(book.getTitle()).isEqualTo("Clean Code");
+    void saveNewBook() {
+        Book book = new Book();
+        book.setIsbn("1234");
+        book.setPublisher("Self");
+        book.setTitle("my book");
+        book.setAuthorId(1L);
+
+        Book saved = bookDao.saveNewBook(book);
+
+        assertThat(saved).isNotNull();
     }
 
     @Test
-    void testBookStream() {
-        // given
-        AtomicInteger count = new AtomicInteger();
-        bookRepository.findAllByTitleNotNull().forEach(book -> {
-            count.incrementAndGet();
-        });
-        // when
-        // then
-        assertThat(count.get()).isGreaterThan(2);
+    void updateBook() {
+        Book book = new Book();
+        book.setIsbn("1234");
+        book.setPublisher("Self");
+        book.setTitle("my book");
+        book.setAuthorId(1L);
+        Book saved = bookDao.saveNewBook(book);
+
+        saved.setTitle("New Book");
+        bookDao.updateBook(saved);
+
+        Book fetched = bookDao.getById(saved.getId());
+
+        assertThat(fetched.getTitle()).isEqualTo("New Book");
     }
 
     @Test
-    void testEmptyResultException() {
+    void deleteBookById() {
+
+        Book book = new Book();
+        book.setIsbn("1234");
+        book.setPublisher("Self");
+        book.setTitle("my book");
+        Book saved = bookDao.saveNewBook(book);
+
+        bookDao.deleteBookById(saved.getId());
+
         assertThrows(EmptyResultDataAccessException.class, () -> {
-            bookRepository.readByTitle("foobar4");
+            bookDao.getById(saved.getId());
         });
-    }
-
-    @Test
-    void testNullParam() {
-        assertNull(bookRepository.getByTitle(null));
-    }
-
-    @Test
-    void testNoException() {
-        assertNull(bookRepository.getByTitle("foo"));
     }
 }
