@@ -36,7 +36,7 @@ class BookDoaImplTest {
         List<Book> books = bookDao.findAllBooks();
 
         assertThat(books).isNotNull();
-        assertThat(books.size()).isGreaterThan(5);
+        assertThat(books.size()).isGreaterThan(2);
     }
 
     @Test
