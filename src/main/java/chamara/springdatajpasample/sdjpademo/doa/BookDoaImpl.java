@@ -18,6 +18,11 @@ public class BookDoaImpl implements BookDoa {
     }
 
     @Override
+    public List<Book> findAllBooksByTitleSorted(Pageable pageable) {
+        return null;
+    }
+
+    @Override
     public List<Book> findAllBooks(Pageable pageable) {
         return null;
     }
