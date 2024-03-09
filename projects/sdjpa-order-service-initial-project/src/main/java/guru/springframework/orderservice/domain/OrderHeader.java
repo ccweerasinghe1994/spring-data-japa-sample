@@ -1,9 +1,6 @@
 package guru.springframework.orderservice.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
@@ -11,10 +8,20 @@ import java.util.Objects;
  * Created by jt on 12/5/21.
  */
 @Entity
+@AttributeOverrides({
+        @AttributeOverride(name = "shippingAddress.address", column = @Column(name = "shipping_address")),
+        @AttributeOverride(name = "shippingAddress.city", column = @Column(name = "shipping_city")),
+        @AttributeOverride(name = "shippingAddress.state", column = @Column(name = "shipping_state")),
+        @AttributeOverride(name = "shippingAddress.zipCode", column = @Column(name = "shipping_zip_code")),
+        @AttributeOverride(name = "billiToAddress.address", column = @Column(name = "bill_to_address")),
+        @AttributeOverride(name = "billiToAddress.city", column = @Column(name = "bill_to_city")),
+        @AttributeOverride(name = "billiToAddress.state", column = @Column(name = "bill_to_state")),
+        @AttributeOverride(name = "billiToAddress.zipCode", column = @Column(name = "bill_to_zip_code"))
+})
 public class OrderHeader extends BaseEntity {
-
-
     private String customer;
+    private Address shippingAddress;
+    private Address billiToAddress;
 
     public String getCustomer() {
         return customer;
@@ -26,24 +33,24 @@ public class OrderHeader extends BaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        if (!super.equals(o)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         OrderHeader that = (OrderHeader) o;
-        return Objects.equals(customer, that.customer);
+
+        if (!Objects.equals(customer, that.customer)) return false;
+        if (!Objects.equals(shippingAddress, that.shippingAddress))
+            return false;
+        return Objects.equals(billiToAddress, that.billiToAddress);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), customer);
+        int result = super.hashCode();
+        result = 31 * result + (customer != null ? customer.hashCode() : 0);
+        result = 31 * result + (shippingAddress != null ? shippingAddress.hashCode() : 0);
+        result = 31 * result + (billiToAddress != null ? billiToAddress.hashCode() : 0);
+        return result;
     }
 }

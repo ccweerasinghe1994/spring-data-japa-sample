@@ -218,6 +218,154 @@ class OrderHeaderTest {
 
 ## 126 - Embedded Types
 
+let's create a new migration for add new column to the `OrderLine` table.
+
+```sql
+alter table order_header
+    add column shipping_address  varchar(30),
+    add column shipping_city     varchar(30),
+    add column shipping_state    varchar(30),
+    add column shipping_zip_code varchar(30),
+    add column bill_to_address   varchar(30),
+    add column bill_to_city      varchar(30),
+    add column bill_to_state     varchar(30),
+    add column bill_to_zip_code  varchar(30);
+```
+
+let's create a new Address class.
+
+```java
+package guru.springframework.orderservice.domain;
+
+import jakarta.persistence.Embeddable;
+
+import java.util.Objects;
+
+@Embeddable
+public class Address {
+    private String address;
+    private String city;
+    private String state;
+    private String zipCode;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Address address1 = (Address) o;
+
+        if (!Objects.equals(address, address1.address)) return false;
+        if (!Objects.equals(city, address1.city)) return false;
+        if (!Objects.equals(state, address1.state)) return false;
+        return Objects.equals(zipCode, address1.zipCode);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = address != null ? address.hashCode() : 0;
+        result = 31 * result + (city != null ? city.hashCode() : 0);
+        result = 31 * result + (state != null ? state.hashCode() : 0);
+        result = 31 * result + (zipCode != null ? zipCode.hashCode() : 0);
+        return result;
+    }
+}
+
+```
+
+let's integrate the `Address` class to the `OrderHeader` class.
+
+```java
+package guru.springframework.orderservice.domain;
+
+import jakarta.persistence.*;
+
+import java.util.Objects;
+
+/**
+ * Created by jt on 12/5/21.
+ */
+@Entity
+@AttributeOverrides({
+        @AttributeOverride(name = "shippingAddress.address", column = @Column(name = "shipping_address")),
+        @AttributeOverride(name = "shippingAddress.city", column = @Column(name = "shipping_city")),
+        @AttributeOverride(name = "shippingAddress.state", column = @Column(name = "shipping_state")),
+        @AttributeOverride(name = "shippingAddress.zipCode", column = @Column(name = "shipping_zip_code")),
+        @AttributeOverride(name = "billiToAddress.address", column = @Column(name = "bill_to_address")),
+        @AttributeOverride(name = "billiToAddress.city", column = @Column(name = "bill_to_city")),
+        @AttributeOverride(name = "billiToAddress.state", column = @Column(name = "bill_to_state")),
+        @AttributeOverride(name = "billiToAddress.zipCode", column = @Column(name = "bill_to_zip_code"))
+})
+public class OrderHeader extends BaseEntity {
+    private String customer;
+    private Address shippingAddress;
+    private Address billiToAddress;
+
+    public String getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(String customer) {
+        this.customer = customer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        OrderHeader that = (OrderHeader) o;
+
+        if (!Objects.equals(customer, that.customer)) return false;
+        if (!Objects.equals(shippingAddress, that.shippingAddress))
+            return false;
+        return Objects.equals(billiToAddress, that.billiToAddress);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (customer != null ? customer.hashCode() : 0);
+        result = 31 * result + (shippingAddress != null ? shippingAddress.hashCode() : 0);
+        result = 31 * result + (billiToAddress != null ? billiToAddress.hashCode() : 0);
+        return result;
+    }
+}
+```
+
 ## 127 - Java Enumerated Types
 
 ## 128 - Hibernate Created Date
