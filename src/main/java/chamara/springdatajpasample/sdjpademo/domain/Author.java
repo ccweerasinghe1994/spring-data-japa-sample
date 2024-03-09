@@ -1,11 +1,11 @@
 package chamara.springdatajpasample.sdjpademo.domain;
 
+import jakarta.persistence.*;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
+@NamedQueries({
+        @NamedQuery(name = "author_find_all", query = "FROM Author"),
+        @NamedQuery(name = "author_find_by_name", query = "SELECT a FROM Author a WHERE a.firstName = :firstName AND a.lastName = :lastName")
+})
 @Entity
 public class Author {
 

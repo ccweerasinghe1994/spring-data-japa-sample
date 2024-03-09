@@ -4,31 +4,49 @@ import jakarta.persistence.*;
 
 import java.util.Objects;
 
+@NamedQuery(name = "Book.jpaNamed", query = "SELECT b FROM Book b WHERE b.title = :title")
 @Entity
 public class Book {
-    private String isbn;
-    private String title;
-    private String publisher;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
+
+    private String title;
+    private String isbn;
+    private String publisher;
     private Long authorId;
+
     public Book() {
 
     }
-    public Book(String isbn, String title, String publisher, Long AuthorId) {
-        this.isbn = isbn;
+
+    public Book(String title, String isbn, String publisher) {
         this.title = title;
+        this.isbn = isbn;
         this.publisher = publisher;
-        this.authorId = AuthorId;
-    }
-    public String getIsbn() {
-        return isbn;
     }
 
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Book book = (Book) o;
+
+        return Objects.equals(id, book.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -39,6 +57,14 @@ public class Book {
         this.title = title;
     }
 
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
     public String getPublisher() {
         return publisher;
     }
@@ -47,32 +73,11 @@ public class Book {
         this.publisher = publisher;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
     public Long getAuthorId() {
         return authorId;
     }
 
-    public void setAuthorId(Long AuthorId) {
-        this.authorId = AuthorId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Book book = (Book) o;
-        return Objects.equals(id, book.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
     }
 }

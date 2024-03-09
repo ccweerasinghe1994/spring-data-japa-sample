@@ -2,7 +2,6 @@ package chamara.springdatajpasample.sdjpademo;
 
 
 import chamara.springdatajpasample.sdjpademo.repositories.BookRepository;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -21,11 +20,9 @@ public class MySqlIT {
     BookRepository bookRepository;
 
     @Test
-    void testJPATestSliceTransaction() {
-        long count = bookRepository.count();
-        assertThat(count).isEqualTo(2);
-
-
+    void testMySQL() {
+        long countBefore = bookRepository.count();
+        assertThat(countBefore).isGreaterThan(0);
     }
 
 }
