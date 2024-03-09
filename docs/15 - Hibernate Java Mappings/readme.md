@@ -480,6 +480,107 @@ public enum OrderStatus {
 
 ## 128 - Hibernate Created Date
 
+let's add a new column to the `OrderHeader` table.
+
+```sql
+alter table order_header
+    add column created_date timestamp;
+```
+
+```java
+package guru.springframework.orderservice.domain;
+
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.sql.Timestamp;
+import java.util.Objects;
+
+@MappedSuperclass
+public abstract class BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Timestamp createdDate;
+
+    public Timestamp getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Timestamp createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BaseEntity that = (BaseEntity) o;
+
+        if (!Objects.equals(id, that.id)) return false;
+        return Objects.equals(createdDate, that.createdDate);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (createdDate != null ? createdDate.hashCode() : 0);
+        return result;
+    }
+}
+
+```
+
+```java
+package guru.springframework.orderservice.repositories;
+
+import guru.springframework.orderservice.domain.OrderHeader;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.ActiveProfiles;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@ActiveProfiles("local")
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+class OrderHeaderRepositoryTest {
+
+    @Autowired
+    OrderHeaderRepository orderHeaderRepository;
+
+    @Test
+    void testSaveOrder() {
+        OrderHeader orderHeader = new OrderHeader();
+        orderHeader.setCustomer("New Customer");
+        OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
+
+        assertNotNull(savedOrder);
+        assertNotNull(savedOrder.getId());
+
+        OrderHeader fetchedOrder = orderHeaderRepository.getById(savedOrder.getId());
+
+        assertNotNull(fetchedOrder);
+        assertNotNull(fetchedOrder.getId());
+        assertNotNull(fetchedOrder.getCreatedDate());
+    }
+}
+```
+
 ## 129 - Hibernate Update Date
 
         
