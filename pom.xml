@@ -59,6 +59,35 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.openrewrite.maven</groupId>-->
+<!--                <artifactId>rewrite-maven-plugin</artifactId>-->
+<!--                <version>5.36.0</version>-->
+<!--                <configuration>-->
+<!--                    <exportDatatables>true</exportDatatables>-->
+<!--                    <activeRecipes>-->
+<!--                        <recipe>org.openrewrite.recommendations.DependencyManagement</recipe>-->
+<!--                    </activeRecipes>-->
+<!--                </configuration>-->
+<!--                <dependencies>-->
+<!--                    <dependency>-->
+<!--                        <groupId>org.openrewrite.recipe</groupId>-->
+<!--                        <artifactId>rewrite-recommendations</artifactId>-->
+<!--                        <version>1.8.0</version>-->
+<!--                    </dependency>-->
+<!--                </dependencies>-->
+<!--            </plugin>-->
+            <plugin>
+                <groupId>org.openrewrite.maven</groupId>
+                <artifactId>rewrite-maven-plugin</artifactId>
+                <version>5.36.0</version>
+                <configuration>
+                    <exportDatatables>true</exportDatatables>
+                    <activeRecipes>
+                        <recipe>com.yourorg.ChangeParentPomExample</recipe>
+                    </activeRecipes>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <profiles>
