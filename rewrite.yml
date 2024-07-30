@@ -1,14 +1,9 @@
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: com.sysco.ChangeParentPomExample
-displayName: Change Maven parent example
+name: com.yourorg.UpgradeParentVersionExample
+displayName: Upgrade Maven parent project version example
 recipeList:
-  - org.openrewrite.maven.ChangeParentPom:
-      oldGroupId: org.springframework.boot
-      newGroupId: org.springframework.boot
-      oldArtifactId: spring-boot-starter-parent
-      newArtifactId: spring-boot-starter-parent
-      newVersion: 29.X
-      oldRelativePath: ../../pom.xml
-      newRelativePath: ../pom.xml
-      versionPattern: '-jre'
+    - org.openrewrite.maven.UpgradeParentVersion:
+          groupId: org.springframework.boot
+          artifactId: spring-boot-starter-parent
+          newVersion: 3.3.2

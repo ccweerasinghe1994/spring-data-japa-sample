@@ -77,6 +77,17 @@
 <!--                    </dependency>-->
 <!--                </dependencies>-->
 <!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.openrewrite.maven</groupId>-->
+<!--                <artifactId>rewrite-maven-plugin</artifactId>-->
+<!--                <version>5.36.0</version>-->
+<!--                <configuration>-->
+<!--                    <exportDatatables>true</exportDatatables>-->
+<!--                    <activeRecipes>-->
+<!--                        <recipe>com.sysco.ChangeParentPomExample</recipe>-->
+<!--                    </activeRecipes>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.openrewrite.maven</groupId>
                 <artifactId>rewrite-maven-plugin</artifactId>
@@ -84,7 +95,7 @@
                 <configuration>
                     <exportDatatables>true</exportDatatables>
                     <activeRecipes>
-                        <recipe>com.sysco.ChangeParentPomExample</recipe>
+                        <recipe>com.yourorg.UpgradeParentVersionExample</recipe>
                     </activeRecipes>
                 </configuration>
             </plugin>
