@@ -84,7 +84,7 @@
                 <configuration>
                     <exportDatatables>true</exportDatatables>
                     <activeRecipes>
-                        <recipe>com.yourorg.ChangeParentPomExample</recipe>
+                        <recipe>com.sysco.ChangeParentPomExample</recipe>
                     </activeRecipes>
                 </configuration>
             </plugin>
