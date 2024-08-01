@@ -1,0 +1,8 @@
+<ruleset>
+    <ignoreVersions>
+        <ignoreVersion>
+            <type>regex</type>
+            <version>.*-M.*</version>
+        </ignoreVersion>
+    </ignoreVersions>
+</ruleset>
