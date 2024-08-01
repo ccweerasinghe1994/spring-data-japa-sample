@@ -56,6 +56,24 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>10.0.3</version>
+                <configuration>
+<!--                    <format>JSON</format>-->
+<!--                    <format>JENKINS</format>-->
+                    <format>CSV</format>
+                    <prettyPrint>true</prettyPrint>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
@@ -128,21 +146,47 @@
                     </ruleSet>
                 </configuration>
             </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.openrewrite.maven</groupId>-->
+<!--                <artifactId>rewrite-maven-plugin</artifactId>-->
+<!--                <version>5.36.0</version>-->
+<!--                <configuration>-->
+<!--                    <activeRecipes>-->
+<!--                        <recipe>com.yourorg.UpgradeSpringBootParentVersion</recipe>-->
+<!--                    </activeRecipes>-->
+<!--                </configuration>-->
+<!--                <dependencies>-->
+<!--                    <dependency>-->
+<!--                        <groupId>org.openrewrite.recipe</groupId>-->
+<!--                        <artifactId>rewrite-spring</artifactId>-->
+<!--                        <version>4.0.0</version>-->
+<!--                    </dependency>-->
+<!--                </dependencies>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.openrewrite.maven</groupId>
                 <artifactId>rewrite-maven-plugin</artifactId>
-                <version>5.36.0</version>
+                <version>5.37.0</version>
                 <configuration>
+                    <exportDatatables>true</exportDatatables>
                     <activeRecipes>
-                        <recipe>com.yourorg.UpgradeSpringBootParentVersion</recipe>
+                        <recipe>org.openrewrite.java.dependencies.DependencyVulnerabilityCheck</recipe>
+                        <recipe>org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_3</recipe>
                     </activeRecipes>
                 </configuration>
                 <dependencies>
                     <dependency>
                         <groupId>org.openrewrite.recipe</groupId>
-                        <artifactId>rewrite-spring</artifactId>
-                        <version>4.0.0</version>
+                        <artifactId>rewrite-java-dependencies</artifactId>
+                        <version>1.14.0</version>
                     </dependency>
+                    <dependency>
+                        <groupId>org.openrewrite.recipe</groupId>
+                        <artifactId>rewrite-spring</artifactId>
+                        <version>5.15.1</version>
+                        <scope>runtime</scope>
+                    </dependency>
+
                 </dependencies>
             </plugin>
         </plugins>
