@@ -1,0 +1,95 @@
+#!/bin/sh
+exit 0
+# let's run the command in the root of the project
+
+ROOT_DIRECTORY=$(git rev-parse --show-toplevel)
+# Define the file to be checked and modified
+# Check if the file exists, create it if it doesn't
+FILE="$ROOT_DIRECTORY/rewrite.yml"
+
+if [ ! -f "$FILE" ]; then
+    touch "$FILE"
+fi
+
+POM_FILE="$ROOT_DIRECTORY/pom.xml"
+# Ensure the mvnw command is executable
+chmod +x "$ROOT_DIRECTORY/mvnw"
+
+# check the maven version
+"$ROOT_DIRECTORY/mvnw" -v
+
+# let's run the mvn versions:display-dependency-updates
+
+output="$("$ROOT_DIRECTORY/mvnw" versions:display-parent-updates)"
+echo "$output"
+if echo "$output" | grep -q "The parent project is the latest version"; then
+  NOT_UPTO_DATE=false
+else
+  NOT_UPTO_DATE=true
+fi
+
+echo "NOT_UPTO_DATE: $NOT_UPTO_DATE"
+
+# if the parent is not up to date, add the
+# Define the recipe to be added
+RECIPE="						<recipe>org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_3</recipe>"
+
+# Define the recipe to be added
+RECIPE_SECTION_TO_ADD=$(cat <<EOF
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: com.yourorg.UpgradeSpringBootParentVersion
+displayName: Upgrade Spring Boot Parent Version
+recipeList:
+  - org.openrewrite.maven.ChangeParentPomVersion:
+      groupId: org.springframework.boot
+      artifactId: spring-boot-starter-parent
+      version: 3.3.2
+  - org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_3
+EOF
+)
+
+
+
+# Check if the recipe already exists in the file
+if ! grep -q "<recipe>org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_3</recipe>" "$POM_FILE"; then
+    # Check the condition
+    if [ "$NOT_UPTO_DATE" = true ]; then
+        # Add the recipe inside the <activeRecipes> tag
+        sed -i '/<activeRecipes>/a\'"$RECIPE"'' pom.xml
+        echo "Recipe added to pom.xml"
+        if grep -q "name: com.yourorg.UpgradeSpringBootParentVersion" "$FILE"; then
+            echo "Recipe already exists in $FILE"
+        else
+            # Append the recipe to the file
+            echo "$RECIPE_SECTION_TO_ADD" >> "$FILE"
+            echo "Recipe appended to $FILE"
+        fi
+    else
+        echo "Condition not met, recipe not added"
+    fi
+else
+    echo "Recipe already exists in $FILE"
+fi
+
+
+# Check if the condition is true
+if [ "$NOT_UPTO_DATE" = true ]; then
+    # Check if the recipe exists in rewrite.yml
+    if grep -q "com.yourorg.UpgradeSpringBootParentVersion" "$FILE"; then
+        echo "rewrite.yml contains com.yourorg.UpgradeSpringBootParentVersion"
+		# Check if the recipe exists in pom.xml
+    	if grep -q "<recipe>org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_3</recipe>" "$POM_FILE"; then
+    	    echo "pom.xml contains <recipe>org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_3</recipe>"
+			"$ROOT_DIRECTORY/mvnw" rewrite:run
+    	else
+    	    echo "pom.xml does not contain <recipe>org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_3</recipe>"
+    	fi
+    else
+        echo "rewrite.yml does not contain com.yourorg.UpgradeSpringBootParentVersion"
+    fi
+else
+    echo "NOT_UPTO_DATE is false"
+fi
+
+exit 1

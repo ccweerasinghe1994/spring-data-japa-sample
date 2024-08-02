@@ -164,7 +164,9 @@ let's write a hook command to add the above plugin to the parent pom:
 # let's run the command in the root of the project
 
 ROOT_DIRECTORY=$(git rev-parse --show-toplevel)
-
+# Define the file to be checked and modified
+FILE="$ROOT_DIRECTORY/rewrite.yml"
+POM_FILE="$ROOT_DIRECTORY/pom.xml"
 # Ensure the mvnw command is executable
 chmod +x "$ROOT_DIRECTORY/mvnw"
 
@@ -174,56 +176,59 @@ chmod +x "$ROOT_DIRECTORY/mvnw"
 # let's run the mvn versions:display-dependency-updates
 
 output="$("$ROOT_DIRECTORY/mvnw" versions:display-parent-updates)"
+echo "$output"
 if echo "$output" | grep -q "The parent project is the latest version"; then
-  NOT_UPTO_DATE=true
-else
   NOT_UPTO_DATE=false
+else
+  NOT_UPTO_DATE=true
 fi
 
-echo "UPTO_DATE: $UPTO_DATE"
+echo "NOT_UPTO_DATE: $NOT_UPTO_DATE"
 
-# Define the condition (replace this with your actual condition)
+# if the parent is not up to date, add the 
+# Define the recipe to be added
+RECIPE="						<recipe>org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_3</recipe>"
 
-# Define the plugin configuration to be added
-PLUGIN_CONFIG=$(cat <<EOF
-<plugin>
-    <groupId>org.openrewrite.maven</groupId>
-    <artifactId>rewrite-maven-plugin</artifactId>
-    <version>5.37.0</version>
-    <configuration>
-        <exportDatatables>true</exportDatatables>
-        <scope>compile</scope>
-        <overrideTransitive>true</overrideTransitive>
-        <addMarkers>true</addMarkers>
-        <activeRecipes>
-            <recipe>org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_3</recipe>
-            <recipe>org.openrewrite.java.dependencies.DependencyVulnerabilityCheck</recipe>
-        </activeRecipes>
-    </configuration>
-    <dependencies>
-        <dependency>
-            <groupId>org.openrewrite.recipe</groupId>
-            <artifactId>rewrite-java-dependencies</artifactId>
-            <version>1.14.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openrewrite.recipe</groupId>
-            <artifactId>rewrite-spring</artifactId>
-            <version>5.16.0</version>
-            <scope>runtime</scope>
-        </dependency>
-    </dependencies>
-</plugin>
+# Define the recipe to be added
+RECIPE_SECTION_TO_ADD=$(cat <<EOF
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: com.yourorg.UpgradeSpringBootParentVersion
+displayName: Upgrade Spring Boot Parent Version
+recipeList:
+  - org.openrewrite.maven.ChangeParentPomVersion:
+      groupId: org.springframework.boot
+      artifactId: spring-boot-starter-parent
+      version: 3.3.2
+  - org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_3
 EOF
 )
 
-# Check the condition
-if [ "$NOT_UPTO_DATE" = true ]; then
-    # Append the plugin configuration to the pom.xml file
-    # Ensure the plugin is added inside the <plugins> tag
-    sed -i '/<\/plugins>/i\'"$PLUGIN_CONFIG"'' pom.xml
-    echo "Plugin configuration added to pom.xml"
+
+
+# Check if the recipe already exists in the file
+if ! grep -q "<recipe>org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_3</recipe>" "$POM_FILE"; then
+    # Check the condition
+    if [ "$NOT_UPTO_DATE" = true ]; then
+        # Add the recipe inside the <activeRecipes> tag
+        sed -i '/<activeRecipes>/a\'"$RECIPE"'' pom.xml
+        echo "Recipe added to pom.xml"
+        if grep -q "name: com.yourorg.UpgradeSpringBootParentVersion" "$FILE"; then
+            echo "Recipe already exists in $FILE"
+        else
+            # Append the recipe to the file
+            echo "$RECIPE_SECTION_TO_ADD" >> "$FILE"
+            echo "Recipe appended to $FILE"
+        fi
+    else
+        echo "Condition not met, recipe not added"
+    fi
 else
-    echo "Condition not met, plugin configuration not added"
+    echo "Recipe already exists in $FILE"
 fi
+
+
+# Check if the recipe already exists in the file
+
+exit 0
 ```
