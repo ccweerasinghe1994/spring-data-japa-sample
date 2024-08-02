@@ -60,8 +60,6 @@
                 <artifactId>dependency-check-maven</artifactId>
                 <version>10.0.3</version>
                 <configuration>
-<!--                    <format>JSON</format>-->
-<!--                    <format>JENKINS</format>-->
                     <format>CSV</format>
                     <prettyPrint>true</prettyPrint>
                 </configuration>
@@ -77,46 +75,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.openrewrite.maven</groupId>-->
-<!--                <artifactId>rewrite-maven-plugin</artifactId>-->
-<!--                <version>5.36.0</version>-->
-<!--                <configuration>-->
-<!--                    <exportDatatables>true</exportDatatables>-->
-<!--                    <activeRecipes>-->
-<!--                        <recipe>org.openrewrite.recommendations.DependencyManagement</recipe>-->
-<!--                    </activeRecipes>-->
-<!--                </configuration>-->
-<!--                <dependencies>-->
-<!--                    <dependency>-->
-<!--                        <groupId>org.openrewrite.recipe</groupId>-->
-<!--                        <artifactId>rewrite-recommendations</artifactId>-->
-<!--                        <version>1.8.0</version>-->
-<!--                    </dependency>-->
-<!--                </dependencies>-->
-<!--            </plugin>-->
-<!--            <plugin>-->
-<!--                <groupId>org.openrewrite.maven</groupId>-->
-<!--                <artifactId>rewrite-maven-plugin</artifactId>-->
-<!--                <version>5.36.0</version>-->
-<!--                <configuration>-->
-<!--                    <exportDatatables>true</exportDatatables>-->
-<!--                    <activeRecipes>-->
-<!--                        <recipe>com.sysco.ChangeParentPomExample</recipe>-->
-<!--                    </activeRecipes>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-<!--            <plugin>-->
-<!--                <groupId>org.openrewrite.maven</groupId>-->
-<!--                <artifactId>rewrite-maven-plugin</artifactId>-->
-<!--                <version>5.36.0</version>-->
-<!--                <configuration>-->
-<!--                    <exportDatatables>true</exportDatatables>-->
-<!--                    <activeRecipes>-->
-<!--                        <recipe>com.yourorg.UpgradeParentVersionExample</recipe>-->
-<!--                    </activeRecipes>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
@@ -125,10 +83,6 @@
                     <ruleSet>
                         <!-- zero or more elements -->
                         <ignoreVersions>
-                            <!-- zero or more elements -->
-                            <ignoreVersion>
-                                <version>1.0.0</version>
-                            </ignoreVersion>
                             <ignoreVersion>
                                 <!-- can be either: 'exact' (default), 'regex' or 'range' -->
                                 <type>regex</type>
@@ -138,56 +92,11 @@
                                 <type>regex</type>
                                 <version>.+-(alpha|beta)</version>
                             </ignoreVersion>
-<!--                            <ignoreVersion>-->
-<!--                                <type>range</type>-->
-<!--                                <version>[2.0,)</version>-->
-<!--                            </ignoreVersion>-->
                         </ignoreVersions>
                     </ruleSet>
+                    <allowMajorUpdates>false</allowMajorUpdates> <!-- Add this line -->
+                    <allowSnapshots>false</allowSnapshots> <!-- Add this line -->
                 </configuration>
-            </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.openrewrite.maven</groupId>-->
-<!--                <artifactId>rewrite-maven-plugin</artifactId>-->
-<!--                <version>5.36.0</version>-->
-<!--                <configuration>-->
-<!--                    <activeRecipes>-->
-<!--                        <recipe>com.yourorg.UpgradeSpringBootParentVersion</recipe>-->
-<!--                    </activeRecipes>-->
-<!--                </configuration>-->
-<!--                <dependencies>-->
-<!--                    <dependency>-->
-<!--                        <groupId>org.openrewrite.recipe</groupId>-->
-<!--                        <artifactId>rewrite-spring</artifactId>-->
-<!--                        <version>4.0.0</version>-->
-<!--                    </dependency>-->
-<!--                </dependencies>-->
-<!--            </plugin>-->
-            <plugin>
-                <groupId>org.openrewrite.maven</groupId>
-                <artifactId>rewrite-maven-plugin</artifactId>
-                <version>5.37.0</version>
-                <configuration>
-                    <exportDatatables>true</exportDatatables>
-                    <activeRecipes>
-                        <recipe>org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_3</recipe>
-                        <recipe>org.openrewrite.java.dependencies.DependencyVulnerabilityCheck</recipe>
-                    </activeRecipes>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.openrewrite.recipe</groupId>
-                        <artifactId>rewrite-java-dependencies</artifactId>
-                        <version>1.14.0</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.openrewrite.recipe</groupId>
-                        <artifactId>rewrite-spring</artifactId>
-                        <version>5.15.1</version>
-                        <scope>runtime</scope>
-                    </dependency>
-
-                </dependencies>
             </plugin>
         </plugins>
     </build>
@@ -222,5 +131,4 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
-
 </project>
