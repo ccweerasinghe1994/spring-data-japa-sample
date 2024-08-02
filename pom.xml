@@ -98,6 +98,33 @@
                     <allowSnapshots>false</allowSnapshots> <!-- Add this line -->
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.openrewrite.maven</groupId>
+                <artifactId>rewrite-maven-plugin</artifactId>
+                <version>5.37.0</version>
+                <configuration>
+                    <exportDatatables>true</exportDatatables>
+                    <scope>compile</scope>
+                    <overrideTransitive>true</overrideTransitive>
+                    <addMarkers>true</addMarkers>
+                    <activeRecipes>
+                        <recipe>org.openrewrite.java.dependencies.DependencyVulnerabilityCheck</recipe>
+                    </activeRecipes>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.openrewrite.recipe</groupId>
+                        <artifactId>rewrite-java-dependencies</artifactId>
+                        <version>1.14.0</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.openrewrite.recipe</groupId>
+                        <artifactId>rewrite-spring</artifactId>
+                        <version>5.16.0</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
     </build>
     <profiles>
