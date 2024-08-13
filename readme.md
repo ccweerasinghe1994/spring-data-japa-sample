@@ -311,3 +311,211 @@ exit 0
 | sdjpa-demo | Tue, 13 Aug 2024 08:59:02 +0530 | tomcat-embed-core-10.1.8.jar | C:\\Users\\chama\\.m2\\repository\\org\\apache\\tomcat\\embed\\tomcat-embed-core\\10.1.8\\tomcat-embed-core-10.1.8.jar | Core Tomcat implementation | Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt | 6205f6802e5f49dd8c48342087ab88ba | ec4b884806c65c80c86bb3db134f6f6f99e79ed8 | pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@10.1.8 | cpe:2.3:a:apache:tomcat:10.1.8:\*:\*:\*:\*:\*:\*:\*, cpe:2.3:a:apache\_tomcat:apache\_tomcat:10.1.8:\*:\*:\*:\*:\*:\*:\* | CVE-2023-42795 | CWE-459 Incomplete Cleanup | Incomplete Cleanup vulnerability in Apache Tomcat.When recycling various internal objects in Apache Tomcat from 11.0.0-M1 through 11.0.0-M11, from 10.1.0-M1 through 10.1.13, from 9.0.0-M1 through 9.0.80 and from 8.5.0 through 8.5.93, an error could  cause Tomcat to skip some parts of the recycling process leading to  information leaking from the current request/response to the next.  Users are recommended to upgrade to version 11.0.0-M12 onwards, 10.1.14 onwards, 9.0.81 onwards or 8.5.94 onwards, which fixes the issue. | NVD |  |  |  | MEDIUM | 5.3 | CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N/E:3.9/RC:R/MAV:A | HIGH | 63 |  |  |  |  |  |  |  |  |
 | sdjpa-demo | Tue, 13 Aug 2024 08:59:02 +0530 | tomcat-embed-core-10.1.8.jar | C:\\Users\\chama\\.m2\\repository\\org\\apache\\tomcat\\embed\\tomcat-embed-core\\10.1.8\\tomcat-embed-core-10.1.8.jar | Core Tomcat implementation | Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt | 6205f6802e5f49dd8c48342087ab88ba | ec4b884806c65c80c86bb3db134f6f6f99e79ed8 | pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@10.1.8 | cpe:2.3:a:apache:tomcat:10.1.8:\*:\*:\*:\*:\*:\*:\*, cpe:2.3:a:apache\_tomcat:apache\_tomcat:10.1.8:\*:\*:\*:\*:\*:\*:\* | CVE-2023-45648 | CWE-20 Improper Input Validation, NVD-CWE-Other | Improper Input Validation vulnerability in Apache Tomcat.Tomcat from 11.0.0-M1 through 11.0.0-M11, from 10.1.0-M1 through 10.1.13, from 9.0.0-M1 through 9.0.81 and from 8.5.0 through 8.5.93 did not correctly parse HTTP trailer headers. A specially  crafted, invalid trailer header could cause Tomcat to treat a single  request as multiple requests leading to the possibility of request  smuggling when behind a reverse proxy.  Users are recommended to upgrade to version 11.0.0-M12 onwards, 10.1.14 onwards, 9.0.81 onwards or 8.5.94 onwards, which fix the issue. | NVD |  |  |  | MEDIUM | 5.3 | CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N/E:3.9/RC:R/MAV:A | HIGH | 63 |  |  |  |  |  |  |  |  |
 
+
+
+### dependency version comparison
+
+```json
+
+[
+  {
+    "C2": "org.springframework",
+    "C3": "CVE-2024-22243",
+    "C4": "spring-web",
+    "C5": "6.0.9",
+    "C6": "",
+    "C7": "false",
+    "C8": "Spring Web vulnerable to Open Redirect or Server Side Request Forgery",
+    "C9": "HIGH",
+    "C10": "1",
+    "C11": ""
+  }
+  ,
+    {
+      "C2": "org.springframework",
+      "C3": "CVE-2024-22259",
+      "C4": "spring-web",
+      "C5": "6.0.9",
+      "C6": "6.0.18",
+      "C7": "false",
+      "C8": "Spring Framework URL Parsing with Host Validation Vulnerability",
+      "C9": "HIGH",
+      "C10": "1",
+      "C11": "CWE-601"
+    }
+    ,
+      {
+        "C2": "org.springframework",
+        "C3": "CVE-2024-22262",
+        "C4": "spring-web",
+        "C5": "6.0.9",
+        "C6": "6.0.19",
+        "C7": "false",
+        "C8": "Spring Framework URL Parsing with Host Validation",
+        "C9": "HIGH",
+        "C10": "1",
+        "C11": ""
+      }
+    
+  ]
+
+
+```
+
+6.0.9
+![img.png](img.png)
+6.0.18
+![img_3.png](img_3.png)
+6.0.19
+![img_1.png](img_1.png)
+```json
+
+
+{
+"DependencyName": "spring-web-6.0.9.jar",
+"Description": "Spring Web",
+"License": "Apache License, Version 2.0: https://www.apache.org/licenses/LICENSE-2.0",
+"Md5": "8f6decc9821673e04d6c86ba7e98e1ec",
+"Sha1": "2837dec8a75ecfdad367d6c30ce9cbdfc89caa7a",
+"Identifiers": "pkg:maven/org.springframework/spring-web@6.0.9",
+"CPE": "cpe:2.3:a:pivotal_software:spring_framework:6.0.9:*:*:*:*:*:*:*, cpe:2.3:a:springsource:spring_framework:6.0.9:*:*:*:*:*:*:*, cpe:2.3:a:vmware:spring_framework:6.0.9:*:*:*:*:*:*:*, cpe:2.3:a:web_project:web:6.0.9:*:*:*:*:*:*:*",
+"CVE": "CVE-2024-22243",
+"CWE": "CWE-20 Improper Input Validation",
+"Vulnerability": "Applications that use UriComponentsBuilder to parse an externally provided URL (e.g. through a query parameter) AND perform validation checks on the host of the parsed URL may be vulnerable to a  open redirect https://cwe.mitre.org/data/definitions/601.html  attack or to a SSRF attack if the URL is used after passing validation checks.   Sonatype's research suggests that this CVE's details differ from those defined at NVD. See https://ossindex.sonatype.org/vulnerability/CVE-2024-22243 for details",
+"Source": "OSSINDEX",
+"CVSSv2_Severity": "",
+"CVSSv2_Score": "",
+"CVSSv2": "",
+"CVSSv3_BaseSeverity": "HIGH",
+"CVSSv3_BaseScore": "8.100000381469727",
+"CVSSv3": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N",
+"CPE Confidence": "HIGH",
+"Evidence Count": "35",
+"VendorProject": "",
+"Product": "",
+"Name": "",
+"DateAdded": "",
+"ShortDescription": "",
+"RequiredAction": "",
+"DueDate": "",
+"Notes": ""
+}
+```
+
+## spring-webmvc
+
+```json
+[
+  {
+    "C2": "org.springframework",
+    "C3": "CVE-2023-34053",
+    "C4": "spring-webmvc",
+    "C5": "6.0.9",
+    "C6": "6.0.14",
+    "C7": "false",
+    "C8": "Spring Framework vulnerable to denial of service",
+    "C9": "HIGH",
+    "C10": "1",
+    "C11": ""
+  }
+]
+```
+6.0.9
+![img_4.png](img_4.png)
+6.0.14
+![img_5.png](img_5.png)
+
+## spring-boot-actuator
+
+3.0.7
+![img_6.png](img_6.png)
+3.0.13
+![img_7.png](img_7.png)
+
+## tomcat-embed-core
+
+10.1.8
+- CVE-2024-34750
+- CVE-2024-24549
+- CVE-2023-46589
+- CVE-2023-45648
+- CVE-2023-44487
+- CVE-2023-42795
+- CVE-2023-41080
+- CVE-2023-34981
+
+- ![img_8.png](img_8.png)
+
+10.1.9
+![img_14.png](img_14.png)
+
+- CVE-2024-34750
+- CVE-2024-24549
+- CVE-2023-46589
+- CVE-2023-45648
+- CVE-2023-44487
+- CVE-2023-42795
+- CVE-2023-41080
+
+10.1.13
+- CVE-2024-34750
+- CVE-2024-24549
+- CVE-2023-46589
+- CVE-2023-45648
+- CVE-2023-44487
+- CVE-2023-42795
+
+![img_10.png](img_10.png)
+
+10.1.14
+- CVE-2024-34750
+- CVE-2024-24549
+- CVE-2023-46589
+![img_9.png](img_9.png)
+
+10.1.16
+- CVE-2024-24549
+- CVE-2024-34750
+
+![img_11.png](img_11.png)
+
+10.1.19
+- CVE-2024-34750
+![img_12.png](img_12.png)
+
+10.1.25
+
+![img_13.png](img_13.png)
+
+## tomcat-embed-websocket
+10.1.8
+- CVE-2024-23672
+![img_15.png](img_15.png)
+- 10.1.19
+![img_16.png](img_16.png)
+
+## logback-core
+1.4.7
+- CVE-2023-6378
+![img_17.png](img_17.png)
+1.4.12
+![img_18.png](img_18.png)
+
+## logback-classic
+1.4.7
+- CVE-2023-6378
+![img_19.png](img_19.png)
+
+1.4.12
+![img_20.png](img_20.png)
+
+
+## snakeyaml
+
+1.33
+
+- CVE-2022-1471
+![img_21.png](img_21.png)
+
+2.0
+![img_22.png](img_22.png)
