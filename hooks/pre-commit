@@ -2,7 +2,7 @@
 # let's run the command in the root of the project
 PARENT_POM_UPDATED=true
 
-#ROOT_DIRECTORY=$(git rev-parse --show-toplevel)
+ROOT_DIRECTORY=$(git rev-parse --show-toplevel)
 ## Define the file to be checked and modified
 ## Check if the file exists, create it if it doesn't
 #FILE="$ROOT_DIRECTORY/rewrite.yml"
@@ -13,7 +13,7 @@ PARENT_POM_UPDATED=true
 #
 #POM_FILE="$ROOT_DIRECTORY/pom.xml"
 ## Ensure the mvnw command is executable
-#chmod +x "$ROOT_DIRECTORY/mvnw"
+chmod +x "$ROOT_DIRECTORY/mvnw"
 #
 ## check the maven version
 #"$ROOT_DIRECTORY/mvnw" -v
@@ -103,7 +103,3 @@ else
     echo "Parent POM not updated"
 fi
 
-
-
-
-exit 0
