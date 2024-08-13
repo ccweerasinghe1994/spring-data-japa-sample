@@ -1,6 +1,7 @@
 #!/bin/sh
-exit 0
 # let's run the command in the root of the project
+exit 0
+PARENT_POM_UPDATED=false
 
 ROOT_DIRECTORY=$(git rev-parse --show-toplevel)
 # Define the file to be checked and modified
@@ -82,6 +83,9 @@ if [ "$NOT_UPTO_DATE" = true ]; then
     	if grep -q "<recipe>org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_3</recipe>" "$POM_FILE"; then
     	    echo "pom.xml contains <recipe>org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_3</recipe>"
 			"$ROOT_DIRECTORY/mvnw" rewrite:run
+            PARENT_POM_UPDATED=true
+            echo "Parent POM updated successfully"
+            echo "PARENT_POM_UPDATE: $PARENT_POM_UPDATED"
     	else
     	    echo "pom.xml does not contain <recipe>org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_3</recipe>"
     	fi

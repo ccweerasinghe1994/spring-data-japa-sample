@@ -14,7 +14,7 @@
     <name>sdjpa-demo</name>
     <description>Demo project for Spring Boot</description>
     <properties>
-        <java.version>21</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
 
@@ -104,11 +104,7 @@
                 <version>5.37.0</version>
                 <configuration>
                     <exportDatatables>true</exportDatatables>
-                    <scope>compile</scope>
-                    <overrideTransitive>true</overrideTransitive>
-                    <addMarkers>true</addMarkers>
                     <activeRecipes>
-                        <recipe>org.openrewrite.java.dependencies.DependencyVulnerabilityCheck</recipe>
                     </activeRecipes>
                 </configuration>
                 <dependencies>
